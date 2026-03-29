@@ -87,10 +87,47 @@
       width: 90%;
       min-height: 150px;
       display: flex;
+      flex-direction: column;      /* Stack text and button vertically */
       align-items: center;
       justify-content: center;
       margin-bottom: 30px;
       transition: all 0.3s ease;  /* Smooth animation when things change */
+    }
+
+    /*
+      THE SPEAK BUTTON!
+      Hugo - this uses the "Web Speech API" which is built into
+      every modern browser. It turns text into speech — the same
+      technology used by Siri, Alexa, and Google Assistant!
+      This is a real AI feature you're adding to your website.
+    */
+    .speak-btn {
+      margin-top: 20px;
+      background: none;
+      border: 1px solid #444;
+      color: #888;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9em;
+      transition: all 0.2s ease;
+      display: none;               /* Hidden until a fact is shown */
+    }
+
+    .speak-btn.visible {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .speak-btn:hover {
+      border-color: #dc2626;
+      color: white;
+    }
+
+    .speak-btn.speaking {
+      border-color: #dc2626;
+      color: #dc2626;
     }
 
     .fact-text {
@@ -558,6 +595,9 @@
   <!-- The box where the fact appears -->
   <div class="fact-box" id="factBox">
     <p class="fact-text" id="factText">Click the button to discover an amazing fact!</p>
+    <button class="speak-btn" id="speakBtn" onclick="speakFact('factText', 'speakBtn')">
+      &#128264; Read Aloud
+    </button>
   </div>
 
   <!-- THE BIG RED BUTTON -->
@@ -585,6 +625,9 @@
 
   <div class="fact-box" id="funnyFactBox">
     <p class="fact-text" id="funnyFactText">Click the button for a funny fact!</p>
+    <button class="speak-btn" id="funnySpeakBtn" onclick="speakFact('funnyFactText', 'funnySpeakBtn')">
+      &#128264; Read Aloud
+    </button>
   </div>
 
   <button class="funny-btn" onclick="showRandomFunnyFact()">
@@ -1834,6 +1877,9 @@
       const text = document.getElementById('funnyFactText');
       const box = document.getElementById('funnyFactBox');
 
+      // Stop any current speech
+      window.speechSynthesis.cancel();
+
       box.style.opacity = '0';
       box.style.transform = 'scale(0.95)';
 
@@ -1841,6 +1887,10 @@
         text.textContent = funnyFacts[randomIndex];
         box.style.opacity = '1';
         box.style.transform = 'scale(1)';
+        // Show the "Read Aloud" button
+        document.getElementById('funnySpeakBtn').classList.add('visible');
+        document.getElementById('funnySpeakBtn').classList.remove('speaking');
+        document.getElementById('funnySpeakBtn').innerHTML = '&#128264; Read Aloud';
       }, 300);
 
       funnyFactsShown++;
@@ -1898,11 +1948,18 @@
       factBox.style.opacity = '0';
       factBox.style.transform = 'scale(0.95)';
 
+      // Stop any current speech when generating a new fact
+      window.speechSynthesis.cancel();
+
       // setTimeout waits a bit before running code (300 milliseconds here)
       setTimeout(() => {
         factText.textContent = facts[randomIndex];
         factBox.style.opacity = '1';
         factBox.style.transform = 'scale(1)';
+        // Show the "Read Aloud" button
+        document.getElementById('speakBtn').classList.add('visible');
+        document.getElementById('speakBtn').classList.remove('speaking');
+        document.getElementById('speakBtn').innerHTML = '&#128264; Read Aloud';
       }, 300);
 
       // Update the counter
@@ -2084,6 +2141,61 @@
 
     function closeAnnouncement() {
       document.getElementById('announcementBar').classList.remove('active');
+    }
+
+    // ============================================
+    // TEXT-TO-SPEECH (Read Aloud)
+    // ============================================
+    //
+    // Hugo - this is REAL AI in action! The Web Speech API
+    // uses a technology called "speech synthesis" to turn
+    // written text into spoken words. Your computer has a
+    // built-in voice engine that reads the text out loud.
+    //
+    // This is the same kind of technology used by:
+    // - Siri (Apple)
+    // - Alexa (Amazon)
+    // - Google Assistant
+    //
+    // The computer breaks words into sounds called "phonemes",
+    // then combines them to create speech. It's not a recording
+    // of a real person — the computer GENERATES the voice!
+
+    function speakFact(textElementId, btnElementId) {
+      const btn = document.getElementById(btnElementId);
+
+      // If it's already speaking, stop it
+      if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+        btn.classList.remove('speaking');
+        btn.innerHTML = '&#128264; Read Aloud';
+        return;
+      }
+
+      // Get the text from the fact box
+      const text = document.getElementById(textElementId).textContent;
+
+      // Create a new "utterance" — that's the thing the browser will speak
+      const utterance = new SpeechSynthesisUtterance(text);
+
+      // Settings for the voice
+      utterance.rate = 0.95;     // Speed (1 = normal, 0.5 = slow, 2 = fast)
+      utterance.pitch = 1;       // How high or low the voice is
+
+      // When it starts speaking, change the button
+      utterance.onstart = () => {
+        btn.classList.add('speaking');
+        btn.innerHTML = '&#9724; Stop';
+      };
+
+      // When it finishes, reset the button
+      utterance.onend = () => {
+        btn.classList.remove('speaking');
+        btn.innerHTML = '&#128264; Read Aloud';
+      };
+
+      // Speak!
+      window.speechSynthesis.speak(utterance);
     }
 
     // ============================================
