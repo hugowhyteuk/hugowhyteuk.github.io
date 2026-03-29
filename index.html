@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<!--
+  ============================================
+  HUGO'S RANDOM FACT GENERATOR
+  ============================================
+
+  Hey Hugo! 👋 This is a website, and it's made of THREE languages:
+
+  1. HTML  - This is the STRUCTURE (like the skeleton of a body)
+             It creates buttons, text, boxes on the page.
+
+  2. CSS   - This is the STYLE (like the clothes and appearance)
+             It makes things look cool — colors, sizes, fonts.
+
+  3. JavaScript - This is the BRAIN (like the muscles and brain)
+             It makes things DO stuff when you click buttons.
+
+  Every website you visit — YouTube, Google, Roblox — uses
+  these same three languages!
+
+  The file you're reading right now is called an HTML file.
+  It ends in .html — that tells your computer "open this in a browser".
+-->
+
+<html lang="en">
+<head>
+  <!--
+    The <head> section is like the "settings" for your page.
+    It doesn't show anything on screen, but tells the browser
+    important info like the title and how to display things.
+  -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hugo's Random Fact Generator</title>
+
+  <!-- ============================================
+       CSS SECTION - THE STYLE / APPEARANCE
+       ============================================
+       Everything inside <style> tags controls how things LOOK.
+       We use "selectors" to pick what to style, then put the
+       styles inside curly braces { }
+  -->
+  <style>
+    /* The * selector means "everything on the page" */
+    * {
+      margin: 0;            /* No space around elements */
+      padding: 0;           /* No space inside elements */
+      box-sizing: border-box; /* Makes sizing easier */
+    }
+
+    /*
+      'body' is the whole page. This is where we set
+      the black background your dad asked for!
+    */
+    body {
+      background-color: #000000;  /* #000000 = black (hex color code) */
+      color: #ffffff;              /* #ffffff = white text */
+      font-family: 'Segoe UI', Arial, sans-serif;
+      min-height: 100vh;           /* vh = viewport height (full screen) */
+      display: flex;               /* Flexbox helps center things */
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* The main title at the top */
+    h1 {
+      font-size: 2.5em;          /* em = relative size unit */
+      margin-top: 40px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .subtitle {
+      color: #888888;            /* Grey color for subtitle */
+      margin-bottom: 40px;
+      font-size: 1.1em;
+    }
+
+    /* The fact display box */
+    .fact-box {
+      background-color: #1a1a1a;  /* Very dark grey - slightly lighter than black */
+      border: 1px solid #333333;  /* Thin grey border */
+      border-radius: 16px;        /* Rounded corners */
+      padding: 40px;
+      max-width: 700px;
+      width: 90%;
+      min-height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30px;
+      transition: all 0.3s ease;  /* Smooth animation when things change */
+    }
+
+    .fact-text {
+      font-size: 1.4em;
+      line-height: 1.6;          /* Space between lines */
+      text-align: center;
+    }
+
+    /*
+      THE RED BUTTON!
+      Hugo - buttons are one of the most important parts of any website.
+      Users click them to make things happen. The :hover part below
+      changes how it looks when you move your mouse over it.
+    */
+    .generate-btn {
+      background-color: #dc2626;  /* Red! */
+      color: white;
+      border: none;               /* No border */
+      padding: 18px 45px;
+      font-size: 1.3em;
+      font-weight: bold;
+      border-radius: 12px;
+      cursor: pointer;            /* Shows a hand when you hover */
+      transition: all 0.2s ease;  /* Smooth animation */
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    /* :hover = what happens when your mouse goes over the button */
+    .generate-btn:hover {
+      background-color: #ef4444;  /* Slightly brighter red */
+      transform: scale(1.05);    /* Gets 5% bigger! */
+      box-shadow: 0 0 30px rgba(220, 38, 38, 0.5); /* Red glow effect */
+    }
+
+    /* :active = what happens when you click the button down */
+    .generate-btn:active {
+      transform: scale(0.98);    /* Shrinks slightly on click */
+    }
+
+    /* The fact counter at the bottom */
+    .counter {
+      margin-top: 20px;
+      color: #666666;
+      font-size: 0.9em;
+    }
+
+    /* ---- ADMIN PANEL STYLES ---- */
+
+    /* The small "Admin" link in the corner */
+    .admin-link {
+      position: fixed;          /* Fixed = stays in place when you scroll */
+      top: 20px;
+      right: 20px;
+      color: #333333;           /* Dark grey - hard to see (on purpose!) */
+      cursor: pointer;
+      font-size: 0.8em;
+      transition: color 0.3s;
+    }
+
+    .admin-link:hover {
+      color: #666666;
+    }
+
+    /* The dark overlay behind the admin panel */
+    .overlay {
+      display: none;             /* Hidden by default */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);  /* Semi-transparent black */
+      z-index: 100;              /* z-index = layer order (higher = on top) */
+      justify-content: center;
+      align-items: center;
+    }
+
+    .overlay.active {
+      display: flex;             /* Show it when 'active' class is added */
+    }
+
+    /* The code entry box */
+    .code-entry {
+      background-color: #1a1a1a;
+      padding: 40px;
+      border-radius: 16px;
+      text-align: center;
+      border: 1px solid #333;
+    }
+
+    .code-entry h2 {
+      margin-bottom: 20px;
+    }
+
+    .code-entry input {
+      background-color: #000;
+      border: 1px solid #444;
+      color: white;
+      padding: 12px 20px;
+      font-size: 1.2em;
+      border-radius: 8px;
+      text-align: center;
+      width: 200px;
+      letter-spacing: 8px;       /* Spreads out the numbers */
+    }
+
+    .code-entry input:focus {
+      outline: none;
+      border-color: #dc2626;
+    }
+
+    .code-entry button {
+      display: block;
+      margin: 15px auto 0;
+      background-color: #dc2626;
+      color: white;
+      border: none;
+      padding: 10px 30px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+
+    .code-entry .cancel-btn {
+      background-color: #333;
+      margin-top: 10px;
+    }
+
+    .error-msg {
+      color: #dc2626;
+      margin-top: 10px;
+      font-size: 0.9em;
+      min-height: 20px;
+    }
+
+    /* The admin panel itself */
+    .admin-panel {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #0a0a0a;
+      z-index: 200;
+      overflow-y: auto;          /* Scrollable if content is tall */
+      padding: 30px;
+    }
+
+    .admin-panel.active {
+      display: block;
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .admin-header h2 {
+      font-size: 1.8em;
+    }
+
+    .admin-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .admin-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95em;
+      font-weight: bold;
+      transition: opacity 0.2s;
+    }
+
+    .admin-btn:hover {
+      opacity: 0.85;
+    }
+
+    .btn-red { background-color: #dc2626; color: white; }
+    .btn-green { background-color: #16a34a; color: white; }
+    .btn-grey { background-color: #444; color: white; }
+    .btn-blue { background-color: #2563eb; color: white; }
+
+    /* Announcement bar (shown to users when admin sends one) */
+    .announcement-bar {
+      display: none;
+      background-color: #dc2626;
+      color: white;
+      padding: 15px 40px 15px 20px;
+      width: 90%;
+      max-width: 700px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      position: relative;
+      font-size: 1.1em;
+      text-align: center;
+      animation: slideDown 0.5s ease;
+    }
+
+    .announcement-bar.active {
+      display: block;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .announcement-close {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.4em;
+      cursor: pointer;
+    }
+
+    /* Fact list in admin panel */
+    .fact-list {
+      list-style: none;         /* No bullet points */
+    }
+
+    .fact-item {
+      background-color: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .fact-item span {
+      flex: 1;
+      line-height: 1.4;
+    }
+
+    .fact-item-num {
+      color: #666;
+      font-size: 0.85em;
+      min-width: 30px;
+    }
+
+    .fact-item-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .fact-item-actions button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85em;
+      color: white;
+    }
+
+    .edit-btn { background-color: #2563eb; }
+    .delete-btn { background-color: #dc2626; }
+
+    /* Modal for add/edit */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 300;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 16px;
+      padding: 30px;
+      width: 90%;
+      max-width: 500px;
+    }
+
+    .modal h3 {
+      margin-bottom: 15px;
+    }
+
+    .modal textarea {
+      width: 100%;
+      min-height: 100px;
+      background: #000;
+      color: white;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 1em;
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    .modal textarea:focus {
+      outline: none;
+      border-color: #dc2626;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      justify-content: flex-end;
+    }
+
+    /* Search bar in admin */
+    .search-bar {
+      width: 100%;
+      max-width: 400px;
+      padding: 10px 15px;
+      background: #000;
+      border: 1px solid #333;
+      color: white;
+      border-radius: 8px;
+      font-size: 1em;
+      margin-bottom: 20px;
+    }
+
+    .search-bar:focus {
+      outline: none;
+      border-color: #dc2626;
+    }
+
+    .fact-count-label {
+      color: #888;
+      margin-bottom: 15px;
+      font-size: 0.95em;
+    }
+
+    /* Responsive - makes it work well on phones too! */
+    @media (max-width: 600px) {
+      h1 { font-size: 1.8em; }
+      .fact-text { font-size: 1.1em; }
+      .generate-btn { padding: 14px 30px; font-size: 1.1em; }
+      .fact-box { padding: 25px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ============================================
+       HTML SECTION - THE STRUCTURE
+       ============================================
+       Hugo - everything you see on the page is made with HTML "tags".
+       Tags come in pairs: <tag>content</tag>
+       Think of them like containers that hold things.
+  -->
+
+  <!-- Announcement bar - hidden until admin sends a message -->
+  <div class="announcement-bar" id="announcementBar">
+    <span id="announcementText"></span>
+    <button class="announcement-close" onclick="closeAnnouncement()">&times;</button>
+  </div>
+
+  <!-- The main title -->
+  <h1>Random Fact Generator</h1>
+  <p class="subtitle">Learn something new every click!</p>
+
+  <!-- The box where the fact appears -->
+  <div class="fact-box" id="factBox">
+    <p class="fact-text" id="factText">Click the button to discover an amazing fact!</p>
+  </div>
+
+  <!-- THE BIG RED BUTTON -->
+  <button class="generate-btn" id="generateBtn" onclick="showRandomFact()">
+    Generate Random Fact
+  </button>
+
+  <!-- Shows which fact number you're on -->
+  <p class="counter" id="counter"></p>
+
+  <!-- Secret admin link - barely visible! -->
+  <div class="admin-link" onclick="showCodeEntry()">Admin</div>
+
+  <!-- ---- CODE ENTRY OVERLAY ---- -->
+  <div class="overlay" id="codeOverlay">
+    <div class="code-entry">
+      <h2>Enter Access Code</h2>
+      <input type="password" id="codeInput" maxlength="6" placeholder="••••••"
+             onkeyup="if(event.key === 'Enter') checkCode()">
+      <button onclick="checkCode()">Enter</button>
+      <button class="cancel-btn" onclick="hideCodeEntry()">Cancel</button>
+      <p class="error-msg" id="errorMsg"></p>
+    </div>
+  </div>
+
+  <!-- ---- ADMIN PANEL ---- -->
+  <div class="admin-panel" id="adminPanel">
+    <div class="admin-header">
+      <h2>Admin Panel</h2>
+      <div class="admin-actions">
+        <button class="admin-btn btn-green" onclick="openAddModal()">+ Add Fact</button>
+        <button class="admin-btn btn-blue" onclick="openAnnouncementModal()">Send Announcement</button>
+        <button class="admin-btn btn-grey" onclick="closeAdmin()">Close Admin</button>
+      </div>
+    </div>
+
+    <input type="text" class="search-bar" id="searchBar" placeholder="Search facts..."
+           oninput="renderFactList()">
+
+    <p class="fact-count-label" id="factCountLabel"></p>
+
+    <ul class="fact-list" id="factList"></ul>
+  </div>
+
+  <!-- ---- ADD/EDIT FACT MODAL ---- -->
+  <div class="modal-overlay" id="factModal">
+    <div class="modal">
+      <h3 id="modalTitle">Add New Fact</h3>
+      <textarea id="factInput" placeholder="Type your fact here..."></textarea>
+      <div class="modal-actions">
+        <button class="admin-btn btn-grey" onclick="closeFactModal()">Cancel</button>
+        <button class="admin-btn btn-green" id="modalSaveBtn" onclick="saveFact()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---- ANNOUNCEMENT MODAL ---- -->
+  <div class="modal-overlay" id="announcementModal">
+    <div class="modal">
+      <h3>Send Announcement</h3>
+      <p style="color: #888; margin-bottom: 10px; font-size: 0.9em;">
+        This message will appear as a red banner at the top of the page for all visitors.
+      </p>
+      <textarea id="announcementInput" placeholder="Type your announcement..."></textarea>
+      <div class="modal-actions">
+        <button class="admin-btn btn-grey" onclick="closeAnnouncementModal()">Cancel</button>
+        <button class="admin-btn btn-blue" onclick="sendAnnouncement()">Send</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============================================
+       JAVASCRIPT SECTION - THE BRAIN
+       ============================================
+       Hugo - this is where the MAGIC happens!
+
+       JavaScript (JS) is a programming language. It tells the
+       browser what to DO when things happen (like clicking a button).
+
+       IMPORTANT CONCEPTS:
+       - A "variable" is like a box that stores information
+         Example: let myName = "Hugo"
+       - A "function" is a set of instructions with a name
+         Example: function sayHello() { alert("Hi!") }
+       - An "array" is a LIST of things
+         Example: let fruits = ["apple", "banana", "orange"]
+
+       AI NOTE: How does a computer pick a "random" number?
+       Computers aren't actually random! They use math formulas
+       that LOOK random but always follow a pattern. This is
+       called "pseudo-random". The function Math.random() gives
+       a number between 0 and 1 (like 0.7382...) and we use
+       math to turn that into a fact number between 1 and 100.
+  -->
+  <script>
+    // ============================================
+    // THE FACTS DATABASE
+    // ============================================
+    // This is an "array" — a list of items inside [ ]
+    // Each fact is a "string" (text inside quotes)
+    // We put 100 facts here for the generator to pick from!
+
+    let facts = [
+      // 🌍 SPACE & EARTH
+      "A day on Venus is longer than a year on Venus. It takes 243 Earth days to rotate once but only 225 Earth days to orbit the Sun.",
+      "There are more stars in the universe than grains of sand on all of Earth's beaches — about 70 billion trillion stars!",
+      "Neutron stars are so dense that a teaspoon of their material would weigh about 6 billion tonnes.",
+      "The footprints left by Apollo astronauts on the Moon will remain there for at least 100 million years because there's no wind or rain to wash them away.",
+      "Saturn is so light (for its size) that it would float in water if you could find a bathtub big enough.",
+      "The Sun makes up 99.86% of all the mass in our entire solar system.",
+      "There is a planet made almost entirely of diamond, called 55 Cancri e, about 40 light-years from Earth.",
+      "A year on Mercury is just 88 Earth days long.",
+      "The Great Wall of China is NOT visible from space with the naked eye — this is a common myth!",
+      "Earth's core is as hot as the surface of the Sun, at about 5,500°C.",
+
+      // 🐾 ANIMALS
+      "Octopuses have three hearts, blue blood, and nine brains — one central brain and one in each arm.",
+      "A group of flamingos is called a 'flamboyance'.",
+      "Dolphins sleep with one eye open and half their brain awake so they can keep breathing and watch for predators.",
+      "Cows have best friends and get stressed when they are separated from them.",
+      "A snail can sleep for up to three years at a time.",
+      "Elephants are the only animals that cannot jump.",
+      "A blue whale's heart is so big that a small child could crawl through its arteries.",
+      "Honey bees can recognise human faces.",
+      "Sea otters hold hands while sleeping to stop themselves from drifting apart.",
+      "The mantis shrimp can punch with the force of a bullet and see 16 types of colour (humans see 3).",
+      "A group of owls is called a 'parliament'.",
+      "Butterflies taste with their feet.",
+      "Axolotls can regrow their limbs, heart, and even parts of their brain.",
+      "Tardigrades (water bears) can survive in the vacuum of space and extreme radiation.",
+      "A woodpecker's tongue wraps around the back of its skull to cushion its brain while pecking.",
+
+      // 🧬 HUMAN BODY
+      "Your body has about 37.2 trillion cells, and most of them are replaced regularly — you're literally a new person every few years!",
+      "Your nose can remember 50,000 different scents.",
+      "Humans share about 60% of their DNA with bananas.",
+      "Your brain uses about 20% of your body's total energy, even though it's only about 2% of your weight.",
+      "The human eye can distinguish about 10 million different colours.",
+      "You produce enough saliva in your lifetime to fill two swimming pools.",
+      "Babies are born with about 300 bones, but adults have only 206 — some bones fuse together as you grow.",
+      "Your small intestine is about 6 metres long — roughly the height of a giraffe.",
+      "Nerve signals in your body travel at speeds up to 250 miles per hour.",
+      "The strongest muscle in your body (relative to its size) is the masseter — your jaw muscle.",
+
+      // 🔬 SCIENCE
+      "If you could fold a piece of paper 42 times, it would reach the Moon.",
+      "Hot water freezes faster than cold water in certain conditions — this is called the Mpemba effect.",
+      "Bananas are naturally slightly radioactive because they contain potassium-40.",
+      "Glass is actually not a solid or a liquid — it's an 'amorphous solid', somewhere in between.",
+      "Lightning strikes the Earth about 100 times every second.",
+      "A single bolt of lightning contains enough energy to toast 100,000 slices of bread.",
+      "Water can boil and freeze at the same time — it's called the 'triple point'.",
+      "If you squeezed out all the empty space in atoms, the entire human race could fit in the volume of a sugar cube.",
+      "The average cloud weighs about 500,000 kg — roughly the weight of 80 elephants!",
+      "Sound travels about 4.3 times faster in water than in air.",
+
+      // 💻 TECHNOLOGY & AI
+      "The first computer 'bug' was an actual bug — a moth found inside Harvard's Mark II computer in 1947.",
+      "The entire internet weighs about the same as a strawberry (about 50 grams) — that's the weight of all the electrons storing data.",
+      "The first website ever created is still online. It was made by Tim Berners-Lee in 1991.",
+      "More people in the world have mobile phones than have access to a flushing toilet.",
+      "AI can now write poetry, create art, and even compose music — but it doesn't understand what it creates the way humans do.",
+      "The first computer programmer was Ada Lovelace, a woman, in the 1840s — over 100 years before modern computers existed.",
+      "A modern smartphone has more computing power than all of NASA had when it sent astronauts to the Moon in 1969.",
+      "The QWERTY keyboard layout was designed in 1873 and was meant to SLOW typists down to prevent typewriter jams.",
+      "About 90% of the world's data was created in just the last two years.",
+      "The word 'robot' comes from the Czech word 'robota', which means forced labour.",
+
+      // 🌍 GEOGRAPHY & NATURE
+      "Honey never spoils. Archaeologists have found 3,000-year-old honey in Egyptian tombs that was still edible.",
+      "Russia spans 11 time zones. When it's breakfast time on one side, it's bedtime on the other.",
+      "The Amazon rainforest produces about 20% of the world's oxygen.",
+      "There is a lake in Australia called Lake Hillier that is bright pink, and scientists still aren't entirely sure why.",
+      "Mount Everest grows about 4 millimetres taller every year due to tectonic activity.",
+      "The Dead Sea is so salty that you float on top of the water without even trying.",
+      "There are more trees on Earth than stars in the Milky Way — about 3 trillion trees vs. 400 billion stars.",
+      "Antarctica is classified as a desert because it gets very little precipitation.",
+      "The longest river in the world, the Nile, is about 6,650 km long — roughly the distance from London to New York and back.",
+      "Yellowstone National Park in the USA sits on top of a supervolcano that could erupt at any time (but probably won't for thousands of years).",
+
+      // 📚 HISTORY
+      "Cleopatra lived closer in time to the Moon landing than to the building of the Great Pyramid.",
+      "Oxford University is older than the Aztec Empire. Teaching at Oxford started in 1096; the Aztec Empire began around 1325.",
+      "In 1932, Australia fought a war against emus — and lost. It's called the Great Emu War.",
+      "Ancient Romans used crushed mouse brains as toothpaste.",
+      "The shortest war in history lasted 38 to 45 minutes — between Britain and Zanzibar in 1896.",
+      "Vikings used to give kittens to new brides as wedding gifts.",
+      "Napoleon was not actually short — he was about 5 feet 7 inches, average height for his time.",
+      "The oldest known joke is from ancient Sumer, about 4,000 years ago, and it's a toilet joke.",
+      "During World War II, a dog named Sergeant Stubby became the most decorated war dog in US history.",
+      "The first person to be killed by a car was in 1869, and the car was going about 4 mph.",
+
+      // 🍕 FOOD
+      "Strawberries aren't actually berries, but bananas are.",
+      "It takes about 700 grapes to make one bottle of wine.",
+      "Carrots were originally purple. Orange carrots were bred by the Dutch in the 17th century.",
+      "Peanuts are not nuts — they're legumes, related to beans and lentils.",
+      "Apples float in water because they are 25% air.",
+      "The most expensive pizza in the world costs $12,000 and takes 72 hours to make.",
+      "Chocolate was used as currency by the Aztecs.",
+      "Ketchup was once sold as medicine in the 1830s to cure diarrhea.",
+      "An ear of corn always has an even number of rows.",
+      "Eating too many carrots can turn your skin slightly orange — it's called carotenemia.",
+
+      // 🎮 RANDOM & FUN
+      "The inventor of the Pringles can, Fredric Baur, was buried in one when he died.",
+      "If you shuffle a deck of cards properly, the order will almost certainly never have existed before in the history of the universe.",
+      "A jiffy is an actual unit of time — it's 1/100th of a second.",
+      "The dot over the letter 'i' is called a tittle.",
+      "Scotland's national animal is the unicorn.",
+      "A bolt of lightning is five times hotter than the surface of the Sun.",
+      "You are more likely to be bitten by someone in New York City than by a shark anywhere in the world.",
+      "The total length of all the DNA in your body would stretch from the Sun to Pluto and back — multiple times.",
+      "The hashtag symbol (#) is technically called an octothorpe.",
+      "LEGO is the world's largest tyre manufacturer — they make over 300 million tiny tyres a year.",
+
+      // 🔢 MATHS & NUMBERS
+      "If you write out every number in English (one, two, three...), you won't use the letter 'b' until you reach 'one billion'.",
+      "A googol is the number 1 followed by 100 zeros. Google's name is a misspelling of this word.",
+      "111,111,111 multiplied by 111,111,111 equals 12,345,678,987,654,321 — a perfect palindrome!",
+      "Zero is the only number that cannot be represented in Roman numerals.",
+      "There are 43,252,003,274,489,856,000 possible combinations on a Rubik's Cube."
+    ];
+
+    // ============================================
+    // VARIABLES (boxes that store information)
+    // ============================================
+    //
+    // Hugo - "let" creates a variable. Think of it like labelling a box.
+    //   let score = 0    ← creates a box called "score" with 0 inside
+    //   score = 5        ← changes what's in the box to 5
+
+    let factsShown = 0;           // How many times the button has been pressed
+    let editingIndex = -1;        // Which fact we're editing (-1 means none)
+    let currentAnnouncement = ""; // The current announcement text
+
+    // ============================================
+    // MAIN FUNCTIONS
+    // ============================================
+    //
+    // Hugo - a "function" is a set of instructions with a name.
+    // When you "call" a function (use its name), it runs those instructions.
+    // It's like a recipe — you write it once, then use it whenever you want.
+
+    // This function picks a random fact and shows it on the page
+    function showRandomFact() {
+      //
+      // HOW RANDOMNESS WORKS (AI & COMPUTERS):
+      //
+      // Math.random() gives a decimal number between 0 and 0.999...
+      // For example: 0.7382...
+      //
+      // We multiply by the number of facts (e.g., 100):
+      // 0.7382 × 100 = 73.82
+      //
+      // Then Math.floor() rounds DOWN to a whole number:
+      // Math.floor(73.82) = 73
+      //
+      // So we pick fact number 73 from our list!
+      // (Arrays start counting from 0, so fact "73" is actually the 74th one)
+      //
+      // FUN AI FACT: This is called "pseudo-random" because computers
+      // can't be truly random — they use mathematical formulas based on
+      // things like the current time to SEEM random!
+
+      const randomIndex = Math.floor(Math.random() * facts.length);
+      const factText = document.getElementById('factText');
+      const factBox = document.getElementById('factBox');
+
+      // Quick animation: fade out, change text, fade in
+      factBox.style.opacity = '0';
+      factBox.style.transform = 'scale(0.95)';
+
+      // setTimeout waits a bit before running code (300 milliseconds here)
+      setTimeout(() => {
+        factText.textContent = facts[randomIndex];
+        factBox.style.opacity = '1';
+        factBox.style.transform = 'scale(1)';
+      }, 300);
+
+      // Update the counter
+      factsShown++;
+      document.getElementById('counter').textContent =
+        `Facts generated: ${factsShown}`;
+    }
+
+    // ============================================
+    // ADMIN PANEL FUNCTIONS
+    // ============================================
+    //
+    // Hugo - these functions control the secret admin panel!
+    // Only someone who knows the code (222016) can get in.
+    //
+    // SECURITY NOTE: In a real professional website, you would
+    // NEVER put a password directly in the code like this,
+    // because anyone can read the code! Real websites use
+    // "servers" (powerful computers) to check passwords secretly.
+    // But for learning, this is a great start!
+
+    const ACCESS_CODE = "222016";  // "const" = a variable that CANNOT change
+
+    function showCodeEntry() {
+      document.getElementById('codeOverlay').classList.add('active');
+      document.getElementById('codeInput').value = '';
+      document.getElementById('errorMsg').textContent = '';
+      document.getElementById('codeInput').focus();
+    }
+
+    function hideCodeEntry() {
+      document.getElementById('codeOverlay').classList.remove('active');
+    }
+
+    function checkCode() {
+      const input = document.getElementById('codeInput').value;
+      if (input === ACCESS_CODE) {
+        hideCodeEntry();
+        openAdmin();
+      } else {
+        document.getElementById('errorMsg').textContent = 'Incorrect code. Try again.';
+        document.getElementById('codeInput').value = '';
+      }
+    }
+
+    function openAdmin() {
+      document.getElementById('adminPanel').classList.add('active');
+      renderFactList();
+    }
+
+    function closeAdmin() {
+      document.getElementById('adminPanel').classList.remove('active');
+    }
+
+    // ============================================
+    // RENDERING THE FACT LIST
+    // ============================================
+    //
+    // Hugo - "rendering" means building what you see on screen.
+    // This function creates the list of all facts in the admin panel.
+    //
+    // Every time you add, edit, or delete a fact, we "re-render"
+    // (rebuild) the whole list. This is how many websites work —
+    // including ones built with tools like React (used by Instagram,
+    // Netflix, and lots of other apps)!
+
+    function renderFactList() {
+      const list = document.getElementById('factList');
+      const searchTerm = document.getElementById('searchBar').value.toLowerCase();
+
+      // Clear the current list
+      list.innerHTML = '';
+
+      // Loop through every fact
+      // Hugo - a "for loop" repeats code for each item in a list.
+      // It's like saying "for each fact, do this..."
+      facts.forEach((fact, index) => {
+        // If there's a search term, skip facts that don't match
+        if (searchTerm && !fact.toLowerCase().includes(searchTerm)) {
+          return; // "return" inside forEach = skip this one
+        }
+
+        // Create a list item for this fact
+        const li = document.createElement('li');
+        li.className = 'fact-item';
+        li.innerHTML = `
+          <span class="fact-item-num">#${index + 1}</span>
+          <span>${fact}</span>
+          <div class="fact-item-actions">
+            <button class="edit-btn" onclick="openEditModal(${index})">Edit</button>
+            <button class="delete-btn" onclick="deleteFact(${index})">Delete</button>
+          </div>
+        `;
+        list.appendChild(li);
+      });
+
+      // Update the count label
+      document.getElementById('factCountLabel').textContent =
+        `${facts.length} facts total`;
+    }
+
+    // ============================================
+    // ADD, EDIT, DELETE FACTS
+    // ============================================
+
+    function openAddModal() {
+      editingIndex = -1;
+      document.getElementById('modalTitle').textContent = 'Add New Fact';
+      document.getElementById('factInput').value = '';
+      document.getElementById('factModal').classList.add('active');
+      document.getElementById('factInput').focus();
+    }
+
+    function openEditModal(index) {
+      editingIndex = index;
+      document.getElementById('modalTitle').textContent = 'Edit Fact';
+      document.getElementById('factInput').value = facts[index];
+      document.getElementById('factModal').classList.add('active');
+      document.getElementById('factInput').focus();
+    }
+
+    function closeFactModal() {
+      document.getElementById('factModal').classList.remove('active');
+      editingIndex = -1;
+    }
+
+    function saveFact() {
+      const text = document.getElementById('factInput').value.trim();
+      if (!text) return; // Don't save empty facts
+
+      if (editingIndex === -1) {
+        // Adding a new fact — push() adds to the END of an array
+        facts.push(text);
+      } else {
+        // Editing an existing fact
+        facts[editingIndex] = text;
+      }
+
+      closeFactModal();
+      renderFactList(); // Re-draw the list with the changes
+    }
+
+    function deleteFact(index) {
+      //
+      // confirm() shows a popup asking "are you sure?"
+      // It returns true if they click OK, false if they click Cancel
+      //
+      if (confirm(`Delete this fact?\n\n"${facts[index]}"`)) {
+        // splice(index, 1) means "remove 1 item at this position"
+        facts.splice(index, 1);
+        renderFactList();
+      }
+    }
+
+    // ============================================
+    // ANNOUNCEMENTS
+    // ============================================
+
+    function openAnnouncementModal() {
+      document.getElementById('announcementInput').value = currentAnnouncement;
+      document.getElementById('announcementModal').classList.add('active');
+      document.getElementById('announcementInput').focus();
+    }
+
+    function closeAnnouncementModal() {
+      document.getElementById('announcementModal').classList.remove('active');
+    }
+
+    function sendAnnouncement() {
+      const text = document.getElementById('announcementInput').value.trim();
+      if (!text) {
+        // If empty, clear any existing announcement
+        currentAnnouncement = "";
+        document.getElementById('announcementBar').classList.remove('active');
+      } else {
+        currentAnnouncement = text;
+        document.getElementById('announcementText').textContent = text;
+        document.getElementById('announcementBar').classList.add('active');
+      }
+      closeAnnouncementModal();
+    }
+
+    function closeAnnouncement() {
+      document.getElementById('announcementBar').classList.remove('active');
+    }
+
+    // ============================================
+    // KEYBOARD SHORTCUT
+    // ============================================
+    // Hugo - we can listen for key presses too!
+    // This lets you press the Space bar to generate a fact
+    // (but only when not typing in a text box)
+
+    document.addEventListener('keydown', (event) => {
+      // Check we're not typing in an input or textarea
+      const tag = event.target.tagName.toLowerCase();
+      if (tag === 'input' || tag === 'textarea') return;
+
+      if (event.code === 'Space') {
+        event.preventDefault(); // Stop the page from scrolling
+        showRandomFact();
+      }
+    });
+
+    /*
+      ============================================
+      🎓 WHAT YOU'VE LEARNED, HUGO:
+      ============================================
+
+      1. HTML creates the structure (buttons, text, boxes)
+      2. CSS makes it look good (colors, sizes, animations)
+      3. JavaScript makes it interactive (click → something happens)
+      4. Variables store information (like a labelled box)
+      5. Functions are reusable sets of instructions
+      6. Arrays are lists of items
+      7. Computers use math formulas to fake randomness
+      8. Events (like "click" or "keydown") trigger functions
+
+      NEXT STEPS if you want to keep learning:
+      - Try changing the colors in the CSS section
+      - Try adding your own facts to the array
+      - Try changing the button text
+      - Look up "HTML tutorial for kids" on YouTube
+
+      You just built your first website. That's brilliant! 🚀
+    */
+  </script>
+
+</body>
+</html>
