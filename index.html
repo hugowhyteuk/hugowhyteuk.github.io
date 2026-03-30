@@ -1,326 +1,62 @@
 <!DOCTYPE html>
 <!--
   ============================================
-  HUGO'S RANDOM FACT GENERATOR
+  HUGO'S FACTS - WITH FIREBASE!
   ============================================
 
-  Hey Hugo! 👋 This is a website, and it's made of THREE languages:
+  Hey Hugo! 👋 This version connects to FIREBASE — a real
+  cloud database made by Google. That means:
 
-  1. HTML  - This is the STRUCTURE (like the skeleton of a body)
-             It creates buttons, text, boxes on the page.
+  - When someone submits a fact, EVERYONE can see it (once approved)
+  - When someone votes, the vote counts for EVERYONE
+  - Data lives on Google's servers, not just in one browser
 
-  2. CSS   - This is the STYLE (like the clothes and appearance)
-             It makes things look cool — colors, sizes, fonts.
-
-  3. JavaScript - This is the BRAIN (like the muscles and brain)
-             It makes things DO stuff when you click buttons.
-
-  Every website you visit — YouTube, Google, Roblox — uses
-  these same three languages!
-
-  The file you're reading right now is called an HTML file.
-  It ends in .html — that tells your computer "open this in a browser".
+  NEW CONCEPT: "The Cloud"
+  When people say "the cloud", they just mean "someone else's computer".
+  Firebase stores your data on Google's computers, so any visitor
+  to your website can read and write to the same database.
+  That's how apps like Instagram, WhatsApp, and TikTok work!
 -->
 
 <html lang="en">
 <head>
-  <!--
-    The <head> section is like the "settings" for your page.
-    It doesn't show anything on screen, but tells the browser
-    important info like the title and how to display things.
-  -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hugo's Random Fact Generator</title>
+  <title>Hugo's Facts</title>
 
-  <!-- ============================================
-       CSS SECTION - THE STYLE / APPEARANCE
-       ============================================
-       Everything inside <style> tags controls how things LOOK.
-       We use "selectors" to pick what to style, then put the
-       styles inside curly braces { }
-  -->
   <style>
-    /* The * selector means "everything on the page" */
     * {
-      margin: 0;            /* No space around elements */
-      padding: 0;           /* No space inside elements */
-      box-sizing: border-box; /* Makes sizing easier */
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    /*
-      'body' is the whole page. This is where we set
-      the black background your dad asked for!
-    */
     body {
-      background-color: #000000;  /* #000000 = black (hex color code) */
-      color: #ffffff;              /* #ffffff = white text */
+      background-color: #000000;
+      color: #ffffff;
       font-family: 'Segoe UI', Arial, sans-serif;
-      min-height: 100vh;           /* vh = viewport height (full screen) */
-      display: flex;               /* Flexbox helps center things */
+      min-height: 100vh;
+      display: flex;
       flex-direction: column;
       align-items: center;
       padding: 20px;
     }
 
-    /* The main title at the top */
     h1 {
-      font-size: 2.5em;          /* em = relative size unit */
+      font-size: 2.8em;
       margin-top: 40px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       text-align: center;
     }
 
     .subtitle {
-      color: #888888;            /* Grey color for subtitle */
+      color: #888888;
       margin-bottom: 40px;
-      font-size: 1.1em;
-    }
-
-    /* The fact display box */
-    .fact-box {
-      background-color: #1a1a1a;  /* Very dark grey - slightly lighter than black */
-      border: 1px solid #333333;  /* Thin grey border */
-      border-radius: 16px;        /* Rounded corners */
-      padding: 40px;
-      max-width: 700px;
-      width: 90%;
-      min-height: 150px;
-      display: flex;
-      flex-direction: column;      /* Stack text and button vertically */
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 30px;
-      transition: all 0.3s ease;  /* Smooth animation when things change */
-    }
-
-    /*
-      THE SPEAK BUTTON!
-      Hugo - this uses the "Web Speech API" which is built into
-      every modern browser. It turns text into speech — the same
-      technology used by Siri, Alexa, and Google Assistant!
-      This is a real AI feature you're adding to your website.
-    */
-    .speak-btn {
-      margin-top: 20px;
-      background: none;
-      border: 1px solid #444;
-      color: #888;
-      padding: 8px 16px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 0.9em;
-      transition: all 0.2s ease;
-      display: none;               /* Hidden until a fact is shown */
-    }
-
-    .speak-btn.visible {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .speak-btn:hover {
-      border-color: #dc2626;
-      color: white;
-    }
-
-    .speak-btn.speaking {
-      border-color: #dc2626;
-      color: #dc2626;
-    }
-
-    .fact-text {
-      font-size: 1.4em;
-      line-height: 1.6;          /* Space between lines */
-      text-align: center;
-    }
-
-    /*
-      THE RED BUTTON!
-      Hugo - buttons are one of the most important parts of any website.
-      Users click them to make things happen. The :hover part below
-      changes how it looks when you move your mouse over it.
-    */
-    .generate-btn {
-      background-color: #dc2626;  /* Red! */
-      color: white;
-      border: none;               /* No border */
-      padding: 18px 45px;
-      font-size: 1.3em;
-      font-weight: bold;
-      border-radius: 12px;
-      cursor: pointer;            /* Shows a hand when you hover */
-      transition: all 0.2s ease;  /* Smooth animation */
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
-
-    /* :hover = what happens when your mouse goes over the button */
-    .generate-btn:hover {
-      background-color: #ef4444;  /* Slightly brighter red */
-      transform: scale(1.05);    /* Gets 5% bigger! */
-      box-shadow: 0 0 30px rgba(220, 38, 38, 0.5); /* Red glow effect */
-    }
-
-    /* :active = what happens when you click the button down */
-    .generate-btn:active {
-      transform: scale(0.98);    /* Shrinks slightly on click */
-    }
-
-    /* The fact counter at the bottom */
-    .counter {
-      margin-top: 20px;
-      color: #666666;
-      font-size: 0.9em;
-    }
-
-    /* ---- ADMIN PANEL STYLES ---- */
-
-    /* The small "Admin" link in the corner */
-    .admin-link {
-      position: fixed;          /* Fixed = stays in place when you scroll */
-      top: 20px;
-      right: 20px;
-      color: #333333;           /* Dark grey - hard to see (on purpose!) */
-      cursor: pointer;
-      font-size: 0.8em;
-      transition: color 0.3s;
-    }
-
-    .admin-link:hover {
-      color: #666666;
-    }
-
-    /* The dark overlay behind the admin panel */
-    .overlay {
-      display: none;             /* Hidden by default */
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);  /* Semi-transparent black */
-      z-index: 100;              /* z-index = layer order (higher = on top) */
-      justify-content: center;
-      align-items: center;
-    }
-
-    .overlay.active {
-      display: flex;             /* Show it when 'active' class is added */
-    }
-
-    /* The code entry box */
-    .code-entry {
-      background-color: #1a1a1a;
-      padding: 40px;
-      border-radius: 16px;
-      text-align: center;
-      border: 1px solid #333;
-    }
-
-    .code-entry h2 {
-      margin-bottom: 20px;
-    }
-
-    .code-entry input {
-      background-color: #000;
-      border: 1px solid #444;
-      color: white;
-      padding: 12px 20px;
       font-size: 1.2em;
-      border-radius: 8px;
       text-align: center;
-      width: 200px;
-      letter-spacing: 8px;       /* Spreads out the numbers */
     }
 
-    .code-entry input:focus {
-      outline: none;
-      border-color: #dc2626;
-    }
-
-    .code-entry button {
-      display: block;
-      margin: 15px auto 0;
-      background-color: #dc2626;
-      color: white;
-      border: none;
-      padding: 10px 30px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1em;
-    }
-
-    .code-entry .cancel-btn {
-      background-color: #333;
-      margin-top: 10px;
-    }
-
-    .error-msg {
-      color: #dc2626;
-      margin-top: 10px;
-      font-size: 0.9em;
-      min-height: 20px;
-    }
-
-    /* The admin panel itself */
-    .admin-panel {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: #0a0a0a;
-      z-index: 200;
-      overflow-y: auto;          /* Scrollable if content is tall */
-      padding: 30px;
-    }
-
-    .admin-panel.active {
-      display: block;
-    }
-
-    .admin-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .admin-header h2 {
-      font-size: 1.8em;
-    }
-
-    .admin-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .admin-btn {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.95em;
-      font-weight: bold;
-      transition: opacity 0.2s;
-    }
-
-    .admin-btn:hover {
-      opacity: 0.85;
-    }
-
-    .btn-red { background-color: #dc2626; color: white; }
-    .btn-green { background-color: #16a34a; color: white; }
-    .btn-grey { background-color: #444; color: white; }
-    .btn-blue { background-color: #2563eb; color: white; }
-
-    /* Announcement bar (shown to users when admin sends one) */
+    /* Announcement bar */
     .announcement-bar {
       display: none;
       background-color: #dc2626;
@@ -335,16 +71,11 @@
       text-align: center;
       animation: slideDown 0.5s ease;
     }
-
-    .announcement-bar.active {
-      display: block;
-    }
-
+    .announcement-bar.active { display: block; }
     @keyframes slideDown {
       from { opacity: 0; transform: translateY(-20px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
     .announcement-close {
       position: absolute;
       right: 12px;
@@ -357,156 +88,211 @@
       cursor: pointer;
     }
 
-    /* Fact list in admin panel */
-    .fact-list {
-      list-style: none;         /* No bullet points */
-    }
-
-    .fact-item {
-      background-color: #1a1a1a;
-      border: 1px solid #2a2a2a;
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .fact-item span {
-      flex: 1;
-      line-height: 1.4;
-    }
-
-    .fact-item-num {
-      color: #666;
-      font-size: 0.85em;
-      min-width: 30px;
-    }
-
-    .fact-item-actions {
-      display: flex;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-
-    .fact-item-actions button {
-      padding: 6px 12px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.85em;
-      color: white;
-    }
-
-    .edit-btn { background-color: #2563eb; }
-    .delete-btn { background-color: #dc2626; }
-
-    /* Modal for add/edit */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.7);
-      z-index: 300;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal-overlay.active {
-      display: flex;
-    }
-
-    .modal {
-      background: #1a1a1a;
-      border: 1px solid #333;
-      border-radius: 16px;
-      padding: 30px;
+    /* Submit fact form */
+    .submit-section {
       width: 90%;
-      max-width: 500px;
+      max-width: 700px;
+      margin-bottom: 40px;
     }
-
-    .modal h3 {
-      margin-bottom: 15px;
+    .submit-section h2 {
+      font-size: 1.3em;
+      margin-bottom: 12px;
+      color: #ccc;
     }
-
-    .modal textarea {
-      width: 100%;
-      min-height: 100px;
-      background: #000;
-      color: white;
-      border: 1px solid #444;
-      border-radius: 8px;
-      padding: 12px;
-      font-size: 1em;
-      resize: vertical;
-      font-family: inherit;
-    }
-
-    .modal textarea:focus {
-      outline: none;
-      border-color: #dc2626;
-    }
-
-    .modal-actions {
+    .submit-form {
       display: flex;
       gap: 10px;
-      margin-top: 15px;
-      justify-content: flex-end;
     }
-
-    /* Search bar in admin */
-    .search-bar {
-      width: 100%;
-      max-width: 400px;
-      padding: 10px 15px;
-      background: #000;
+    .submit-input {
+      flex: 1;
+      background-color: #1a1a1a;
       border: 1px solid #333;
       color: white;
-      border-radius: 8px;
+      padding: 14px 18px;
       font-size: 1em;
-      margin-bottom: 20px;
+      border-radius: 10px;
+      font-family: inherit;
     }
-
-    .search-bar:focus {
+    .submit-input:focus {
       outline: none;
       border-color: #dc2626;
     }
+    .submit-btn {
+      background-color: #dc2626;
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      font-size: 1em;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .submit-btn:hover {
+      background-color: #ef4444;
+      transform: scale(1.03);
+    }
+    .submit-msg {
+      margin-top: 10px;
+      font-size: 0.9em;
+      min-height: 20px;
+    }
+    .submit-msg.success { color: #22c55e; }
+    .submit-msg.error { color: #dc2626; }
 
-    .fact-count-label {
-      color: #888;
+    /* Community facts list */
+    .community-section {
+      width: 90%;
+      max-width: 700px;
+      margin-bottom: 40px;
+    }
+    .community-section h2 {
+      font-size: 1.3em;
+      margin-bottom: 5px;
+      color: #ccc;
+    }
+    .community-subtitle {
+      color: #555;
+      font-size: 0.85em;
       margin-bottom: 15px;
+    }
+    .community-fact {
+      background-color: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      transition: border-color 0.2s;
+    }
+    .community-fact:hover { border-color: #333; }
+
+    /* Vote buttons */
+    .vote-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      min-width: 45px;
+      flex-shrink: 0;
+    }
+    .vote-btn {
+      background: none;
+      border: 1px solid #333;
+      color: #666;
+      width: 36px;
+      height: 28px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9em;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .vote-btn:hover { border-color: #555; color: #aaa; }
+    .vote-btn.upvoted { background-color: #16a34a; border-color: #16a34a; color: white; }
+    .vote-btn.downvoted { background-color: #dc2626; border-color: #dc2626; color: white; }
+    .vote-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .vote-count {
       font-size: 0.95em;
+      font-weight: bold;
+      color: #aaa;
+      min-width: 20px;
+      text-align: center;
+    }
+    .vote-count.positive { color: #22c55e; }
+    .vote-count.negative { color: #dc2626; }
+
+    .community-fact-text {
+      flex: 1;
+      line-height: 1.5;
+      font-size: 1.05em;
+    }
+    .community-fact-meta {
+      color: #444;
+      font-size: 0.75em;
+      margin-top: 4px;
+    }
+    .no-facts-msg {
+      color: #444;
+      text-align: center;
+      padding: 30px;
+      font-size: 1em;
+    }
+    .loading-msg {
+      color: #555;
+      text-align: center;
+      padding: 30px;
+      font-size: 1em;
     }
 
-
-    /* ---- FUNNY FACT SECTION ---- */
+    /* Section divider */
     .section-divider {
       width: 90%;
       max-width: 700px;
       border: none;
       border-top: 1px solid #222;
-      margin: 50px 0;
+      margin: 30px 0 40px;
     }
 
-    .funny-section h2 {
+    /* Random fact generator */
+    .generator-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 60px;
+    }
+    .generator-section h2 {
       font-size: 2em;
       margin-bottom: 10px;
       text-align: center;
     }
-
-    .funny-subtitle {
-      color: #888888;
-      margin-bottom: 40px;
+    .generator-subtitle {
+      color: #888;
+      margin-bottom: 30px;
       font-size: 1.1em;
+    }
+    .fact-box {
+      background-color: #1a1a1a;
+      border: 1px solid #333333;
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 700px;
+      width: 90%;
+      min-height: 150px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30px;
+      transition: all 0.3s ease;
+    }
+    .fact-text {
+      font-size: 1.4em;
+      line-height: 1.6;
       text-align: center;
     }
-
-    .funny-btn {
+    .speak-btn {
+      margin-top: 20px;
+      background: none;
+      border: 1px solid #444;
+      color: #888;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9em;
+      transition: all 0.2s ease;
+      display: none;
+    }
+    .speak-btn.visible { display: inline-flex; align-items: center; gap: 6px; }
+    .speak-btn:hover { border-color: #dc2626; color: white; }
+    .speak-btn.speaking { border-color: #dc2626; color: #dc2626; }
+    .generate-btn {
       background-color: #dc2626;
       color: white;
       border: none;
@@ -519,24 +305,110 @@
       text-transform: uppercase;
       letter-spacing: 2px;
     }
-
-    .funny-btn:hover {
+    .generate-btn:hover {
       background-color: #ef4444;
       transform: scale(1.05);
       box-shadow: 0 0 30px rgba(220, 38, 38, 0.5);
     }
+    .generate-btn:active { transform: scale(0.98); }
+    .counter { margin-top: 20px; color: #666666; font-size: 0.9em; }
 
-    .funny-btn:active {
-      transform: scale(0.98);
+    /* Admin link */
+    .admin-link {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      color: #333333;
+      cursor: pointer;
+      font-size: 0.8em;
+      transition: color 0.3s;
     }
+    .admin-link:hover { color: #666666; }
 
-    /* Admin tabs */
-    .admin-tabs {
+    /* Overlay & code entry */
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+    .overlay.active { display: flex; }
+    .code-entry {
+      background-color: #1a1a1a;
+      padding: 40px;
+      border-radius: 16px;
+      text-align: center;
+      border: 1px solid #333;
+    }
+    .code-entry h2 { margin-bottom: 20px; }
+    .code-entry input {
+      background-color: #000;
+      border: 1px solid #444;
+      color: white;
+      padding: 12px 20px;
+      font-size: 1.2em;
+      border-radius: 8px;
+      text-align: center;
+      width: 200px;
+      letter-spacing: 8px;
+    }
+    .code-entry input:focus { outline: none; border-color: #dc2626; }
+    .code-entry button {
+      display: block;
+      margin: 15px auto 0;
+      background-color: #dc2626;
+      color: white;
+      border: none;
+      padding: 10px 30px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    .code-entry .cancel-btn { background-color: #333; margin-top: 10px; }
+    .error-msg { color: #dc2626; margin-top: 10px; font-size: 0.9em; min-height: 20px; }
+
+    /* Admin panel */
+    .admin-panel {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: #0a0a0a;
+      z-index: 200;
+      overflow-y: auto;
+      padding: 30px;
+    }
+    .admin-panel.active { display: block; }
+    .admin-header {
       display: flex;
-      gap: 0;
-      margin-bottom: 20px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
+    .admin-header h2 { font-size: 1.8em; }
+    .admin-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .admin-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95em;
+      font-weight: bold;
+      transition: opacity 0.2s;
+    }
+    .admin-btn:hover { opacity: 0.85; }
+    .btn-red { background-color: #dc2626; color: white; }
+    .btn-green { background-color: #16a34a; color: white; }
+    .btn-grey { background-color: #444; color: white; }
+    .btn-blue { background-color: #2563eb; color: white; }
 
+    .admin-tabs { display: flex; gap: 0; margin-bottom: 20px; }
     .admin-tab {
       padding: 10px 24px;
       background: #1a1a1a;
@@ -547,99 +419,168 @@
       font-weight: bold;
       transition: all 0.2s;
     }
-
-    .admin-tab:first-child {
-      border-radius: 8px 0 0 8px;
+    .admin-tab:first-child { border-radius: 8px 0 0 8px; }
+    .admin-tab:last-child { border-radius: 0 8px 8px 0; }
+    .admin-tab.active { background: #dc2626; border-color: #dc2626; color: white; }
+    .admin-tab .badge {
+      background: #ea580c;
+      color: white;
+      padding: 2px 7px;
+      border-radius: 10px;
+      font-size: 0.8em;
+      margin-left: 6px;
     }
+    .admin-tab.active .badge { background: white; color: #dc2626; }
 
-    .admin-tab:last-child {
-      border-radius: 0 8px 8px 0;
+    .search-bar {
+      width: 100%;
+      max-width: 400px;
+      padding: 10px 15px;
+      background: #000;
+      border: 1px solid #333;
+      color: white;
+      border-radius: 8px;
+      font-size: 1em;
+      margin-bottom: 20px;
     }
-
-    .admin-tab.active {
-      background: #dc2626;
-      border-color: #dc2626;
+    .search-bar:focus { outline: none; border-color: #dc2626; }
+    .fact-count-label { color: #888; margin-bottom: 15px; font-size: 0.95em; }
+    .fact-list { list-style: none; }
+    .fact-item {
+      background-color: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+    .fact-item span { flex: 1; line-height: 1.4; }
+    .fact-item-num { color: #666; font-size: 0.85em; min-width: 30px; }
+    .fact-item-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .fact-item-actions button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85em;
       color: white;
     }
+    .edit-btn { background-color: #2563eb; }
+    .delete-btn { background-color: #dc2626; }
+    .approve-btn { background-color: #16a34a; }
+    .decline-btn { background-color: #dc2626; }
+    .pending-item { border-left: 3px solid #ea580c; }
+    .pending-label {
+      color: #ea580c;
+      font-size: 0.75em;
+      text-transform: uppercase;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
 
-    /* Responsive - makes it work well on phones too! */
+    /* Modals */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 300;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 16px;
+      padding: 30px;
+      width: 90%;
+      max-width: 500px;
+    }
+    .modal h3 { margin-bottom: 15px; }
+    .modal textarea {
+      width: 100%;
+      min-height: 100px;
+      background: #000;
+      color: white;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 1em;
+      resize: vertical;
+      font-family: inherit;
+    }
+    .modal textarea:focus { outline: none; border-color: #dc2626; }
+    .modal-actions { display: flex; gap: 10px; margin-top: 15px; justify-content: flex-end; }
+
     @media (max-width: 600px) {
-      h1 { font-size: 1.8em; }
+      h1 { font-size: 2em; }
       .fact-text { font-size: 1.1em; }
       .generate-btn { padding: 14px 30px; font-size: 1.1em; }
       .fact-box { padding: 25px; }
+      .submit-form { flex-direction: column; }
+      .submit-btn { width: 100%; }
     }
   </style>
 </head>
 
 <body>
 
-  <!-- ============================================
-       HTML SECTION - THE STRUCTURE
-       ============================================
-       Hugo - everything you see on the page is made with HTML "tags".
-       Tags come in pairs: <tag>content</tag>
-       Think of them like containers that hold things.
-  -->
-
-  <!-- Announcement bar - hidden until admin sends a message -->
+  <!-- Announcement bar -->
   <div class="announcement-bar" id="announcementBar">
     <span id="announcementText"></span>
     <button class="announcement-close" onclick="closeAnnouncement()">&times;</button>
   </div>
 
-  <!-- The main title -->
-  <h1>Random Fact Generator</h1>
-  <p class="subtitle">Learn something new every click!</p>
+  <h1>Hugo's Facts</h1>
+  <p class="subtitle">Submit your favourite facts</p>
 
-  <!-- The box where the fact appears -->
-  <div class="fact-box" id="factBox">
-    <p class="fact-text" id="factText">Click the button to discover an amazing fact!</p>
-    <button class="speak-btn" id="speakBtn" onclick="speakFact('factText', 'speakBtn')">
-      &#128264; Read Aloud
-    </button>
+  <!-- Submit a fact -->
+  <div class="submit-section">
+    <h2>Submit a Fact</h2>
+    <div class="submit-form">
+      <input type="text" class="submit-input" id="submitInput"
+             placeholder="Type an interesting fact..."
+             maxlength="300"
+             onkeyup="if(event.key === 'Enter') submitFact()">
+      <button class="submit-btn" onclick="submitFact()">Submit</button>
+    </div>
+    <p class="submit-msg" id="submitMsg"></p>
   </div>
 
-  <!-- THE BIG RED BUTTON -->
-  <button class="generate-btn" id="generateBtn" onclick="showRandomFact()">
-    Generate Random Fact
-  </button>
+  <!-- Community facts -->
+  <div class="community-section">
+    <h2>Community Facts</h2>
+    <p class="community-subtitle">Vote for your favourites — facts are ranked by votes</p>
+    <div id="communityFactsList">
+      <p class="loading-msg">Loading facts...</p>
+    </div>
+  </div>
 
-  <!-- Shows which fact number you're on -->
-  <p class="counter" id="counter"></p>
-
-  <!-- ============================================
-       FUNNY FACT SECTION
-       Hugo - this is a second generator! Same idea,
-       different facts. Notice how we REUSE the same
-       design patterns (box, button, counter).
-       In coding, reusing patterns is called DRY:
-       "Don't Repeat Yourself" — it's a golden rule!
-       ============================================ -->
   <hr class="section-divider">
 
-  <div class="funny-section">
-    <h2>Funny Fact Generator</h2>
-    <p class="funny-subtitle">Warning: may cause uncontrollable laughter!</p>
+  <!-- Random fact generator -->
+  <div class="generator-section">
+    <h2>Random Fact Generator</h2>
+    <p class="generator-subtitle">Learn something new every click!</p>
+    <div class="fact-box" id="factBox">
+      <p class="fact-text" id="factText">Click the button to discover an amazing fact!</p>
+      <button class="speak-btn" id="speakBtn" onclick="speakFact('factText', 'speakBtn')">
+        &#128264; Read Aloud
+      </button>
+    </div>
+    <button class="generate-btn" onclick="showRandomFact()">Generate Random Fact</button>
+    <p class="counter" id="counter"></p>
   </div>
 
-  <div class="fact-box" id="funnyFactBox">
-    <p class="fact-text" id="funnyFactText">Click the button for a funny fact!</p>
-    <button class="speak-btn" id="funnySpeakBtn" onclick="speakFact('funnyFactText', 'funnySpeakBtn')">
-      &#128264; Read Aloud
-    </button>
-  </div>
-
-  <button class="funny-btn" onclick="showRandomFunnyFact()">
-    Generate Funny Fact
-  </button>
-
-  <p class="counter" id="funnyCounter"></p>
-
-  <!-- Secret admin link - barely visible! -->
+  <!-- Admin link -->
   <div class="admin-link" onclick="showCodeEntry()">Admin</div>
 
-  <!-- ---- CODE ENTRY OVERLAY ---- -->
+  <!-- Code entry -->
   <div class="overlay" id="codeOverlay">
     <div class="code-entry">
       <h2>Enter Access Code</h2>
@@ -651,7 +592,7 @@
     </div>
   </div>
 
-  <!-- ---- ADMIN PANEL ---- -->
+  <!-- Admin panel -->
   <div class="admin-panel" id="adminPanel">
     <div class="admin-header">
       <h2>Admin Panel</h2>
@@ -661,39 +602,36 @@
         <button class="admin-btn btn-grey" onclick="closeAdmin()">Close Admin</button>
       </div>
     </div>
-
-    <!-- Tabs to switch between fact types -->
     <div class="admin-tabs">
-      <button class="admin-tab active" id="tabFacts" onclick="switchAdminTab('facts')">Random Facts</button>
-      <button class="admin-tab" id="tabFunny" onclick="switchAdminTab('funny')">Funny Facts</button>
+      <button class="admin-tab active" id="tabPending" onclick="switchAdminTab('pending')">
+        Pending <span class="badge" id="pendingBadge">0</span>
+      </button>
+      <button class="admin-tab" id="tabApproved" onclick="switchAdminTab('approved')">Approved</button>
+      <button class="admin-tab" id="tabRandom" onclick="switchAdminTab('random')">Random Facts</button>
     </div>
-
-    <input type="text" class="search-bar" id="searchBar" placeholder="Search facts..."
-           oninput="renderFactList()">
-
+    <input type="text" class="search-bar" id="searchBar" placeholder="Search facts..." oninput="renderAdminList()">
     <p class="fact-count-label" id="factCountLabel"></p>
-
     <ul class="fact-list" id="factList"></ul>
   </div>
 
-  <!-- ---- ADD/EDIT FACT MODAL ---- -->
+  <!-- Add/Edit modal -->
   <div class="modal-overlay" id="factModal">
     <div class="modal">
       <h3 id="modalTitle">Add New Fact</h3>
       <textarea id="factInput" placeholder="Type your fact here..."></textarea>
       <div class="modal-actions">
         <button class="admin-btn btn-grey" onclick="closeFactModal()">Cancel</button>
-        <button class="admin-btn btn-green" id="modalSaveBtn" onclick="saveFact()">Save</button>
+        <button class="admin-btn btn-green" onclick="saveFact()">Save</button>
       </div>
     </div>
   </div>
 
-  <!-- ---- ANNOUNCEMENT MODAL ---- -->
+  <!-- Announcement modal -->
   <div class="modal-overlay" id="announcementModal">
     <div class="modal">
       <h3>Send Announcement</h3>
       <p style="color: #888; margin-bottom: 10px; font-size: 0.9em;">
-        This message will appear as a red banner at the top of the page for all visitors.
+        This message will appear as a red banner at the top of the page.
       </p>
       <textarea id="announcementInput" placeholder="Type your announcement..."></textarea>
       <div class="modal-actions">
@@ -703,40 +641,238 @@
     </div>
   </div>
 
-
   <!-- ============================================
-       JAVASCRIPT SECTION - THE BRAIN
-       ============================================
-       Hugo - this is where the MAGIC happens!
+       FIREBASE SDK
+       Hugo - these <script> tags load Firebase's code
+       from Google's servers. It's like importing a
+       toolbox that lets us talk to the database.
+       We use "type=module" which is a modern way of
+       loading JavaScript that lets us use "import".
+       ============================================ -->
+  <script type="module">
+    // Import Firebase from Google's CDN (Content Delivery Network)
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import {
+      getFirestore, collection, doc, addDoc, updateDoc, deleteDoc,
+      getDocs, query, orderBy, onSnapshot, increment
+    } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-       JavaScript (JS) is a programming language. It tells the
-       browser what to DO when things happen (like clicking a button).
+    // Your Firebase config — this tells the code WHICH database to connect to
+    const firebaseConfig = {
+      apiKey: "AIzaSyANBfiUQ6IR8jvFF4bZMTtUWFLYnj88A0E",
+      authDomain: "hugo-facts.firebaseapp.com",
+      projectId: "hugo-facts",
+      storageBucket: "hugo-facts.firebasestorage.app",
+      messagingSenderId: "363333437583",
+      appId: "1:363333437583:web:70c9a2bedac351261848fa",
+      measurementId: "G-JH806WEQQE"
+    };
 
-       IMPORTANT CONCEPTS:
-       - A "variable" is like a box that stores information
-         Example: let myName = "Hugo"
-       - A "function" is a set of instructions with a name
-         Example: function sayHello() { alert("Hi!") }
-       - An "array" is a LIST of things
-         Example: let fruits = ["apple", "banana", "orange"]
+    // Initialise Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-       AI NOTE: How does a computer pick a "random" number?
-       Computers aren't actually random! They use math formulas
-       that LOOK random but always follow a pattern. This is
-       called "pseudo-random". The function Math.random() gives
-       a number between 0 and 1 (like 0.7382...) and we use
-       math to turn that into a fact number between 1 and 100.
-  -->
-  <script>
     // ============================================
-    // THE FACTS DATABASE
+    // FIRESTORE COLLECTIONS
     // ============================================
-    // This is an "array" — a list of items inside [ ]
-    // Each fact is a "string" (text inside quotes)
-    // We put 100 facts here for the generator to pick from!
+    //
+    // Hugo - a "collection" in Firestore is like a folder
+    // that holds "documents" (individual records).
+    // We have two collections:
+    //   "approved" - facts that are live on the site
+    //   "pending"  - facts waiting for admin approval
 
-    let facts = [
-      // 🌍 SPACE & EARTH
+    // ============================================
+    // SESSION VOTE TRACKING
+    // ============================================
+    // We still use sessionStorage for votes — each browser tab
+    // gets one vote per fact. This resets when you close the tab.
+
+    function loadSessionVotes() {
+      const saved = sessionStorage.getItem('hugoFacts_votes');
+      return saved ? JSON.parse(saved) : {};
+    }
+
+    function saveSessionVotes(data) {
+      sessionStorage.setItem('hugoFacts_votes', JSON.stringify(data));
+    }
+
+    // ============================================
+    // SANITISE INPUT (prevent links & bad HTML)
+    // ============================================
+
+    function sanitiseInput(text) {
+      let clean = text.replace(/<[^>]*>/g, '');
+      clean = clean.replace(/https?:\/\/[^\s]+/gi, '');
+      clean = clean.replace(/www\.[^\s]+/gi, '');
+      clean = clean.replace(/[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/[^\s]*)?/gi, function(match) {
+        const tlds = ['com', 'org', 'net', 'co', 'io', 'uk', 'edu', 'gov', 'info', 'me'];
+        const parts = match.split('.');
+        const lastPart = parts[parts.length - 1].split('/')[0].toLowerCase();
+        if (tlds.includes(lastPart)) return '[link removed]';
+        return match;
+      });
+      return clean.trim();
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // ============================================
+    // SUBMIT A FACT (writes to Firestore "pending")
+    // ============================================
+
+    window.submitFact = async function() {
+      const input = document.getElementById('submitInput');
+      const msg = document.getElementById('submitMsg');
+      const raw = input.value.trim();
+
+      if (!raw) {
+        msg.textContent = 'Please type a fact first!';
+        msg.className = 'submit-msg error';
+        return;
+      }
+      if (raw.length < 10) {
+        msg.textContent = 'Your fact is too short — try adding more detail!';
+        msg.className = 'submit-msg error';
+        return;
+      }
+
+      const clean = sanitiseInput(raw);
+      if (clean.includes('[link removed]')) {
+        msg.textContent = 'Links are not allowed in facts. Please remove any URLs.';
+        msg.className = 'submit-msg error';
+        return;
+      }
+
+      try {
+        // addDoc() creates a new document in the "pending" collection
+        await addDoc(collection(db, 'pending'), {
+          text: clean,
+          votes: 0,
+          submittedBy: 'Visitor',
+          date: new Date().toISOString().split('T')[0]
+        });
+
+        msg.textContent = 'Fact submitted! It will appear once approved by the admin.';
+        msg.className = 'submit-msg success';
+        input.value = '';
+        setTimeout(() => { msg.textContent = ''; }, 5000);
+      } catch (error) {
+        msg.textContent = 'Error submitting fact. Please try again.';
+        msg.className = 'submit-msg error';
+        console.error('Submit error:', error);
+      }
+    };
+
+    // ============================================
+    // LOAD & RENDER COMMUNITY FACTS (real-time!)
+    // ============================================
+    //
+    // Hugo - onSnapshot() is MAGIC. It listens to the database
+    // and automatically updates the page whenever data changes.
+    // So if you approve a fact in the admin panel, it instantly
+    // appears for everyone viewing the site. Real-time!
+
+    let approvedFacts = [];
+
+    onSnapshot(
+      query(collection(db, 'approved'), orderBy('votes', 'desc')),
+      (snapshot) => {
+        approvedFacts = [];
+        snapshot.forEach((docSnap) => {
+          approvedFacts.push({ id: docSnap.id, ...docSnap.data() });
+        });
+        renderCommunityFacts();
+        // Also update admin list if it's open
+        if (document.getElementById('adminPanel').classList.contains('active')) {
+          renderAdminList();
+        }
+      }
+    );
+
+    // Also listen to pending for admin badge updates
+    let pendingFacts = [];
+
+    onSnapshot(collection(db, 'pending'), (snapshot) => {
+      pendingFacts = [];
+      snapshot.forEach((docSnap) => {
+        pendingFacts.push({ id: docSnap.id, ...docSnap.data() });
+      });
+      updatePendingBadge();
+      if (document.getElementById('adminPanel').classList.contains('active')) {
+        renderAdminList();
+      }
+    });
+
+    function renderCommunityFacts() {
+      const container = document.getElementById('communityFactsList');
+      const votes = loadSessionVotes();
+
+      if (approvedFacts.length === 0) {
+        container.innerHTML = '<p class="no-facts-msg">No community facts yet — be the first to submit one!</p>';
+        return;
+      }
+
+      let html = '';
+      approvedFacts.forEach(fact => {
+        const userVote = votes[fact.id] || null;
+        const voteClass = fact.votes > 0 ? 'positive' : fact.votes < 0 ? 'negative' : '';
+
+        html += `
+          <div class="community-fact">
+            <div class="vote-controls">
+              <button class="vote-btn ${userVote === 'up' ? 'upvoted' : ''}"
+                      onclick="vote('${fact.id}', 'up')"
+                      ${userVote ? 'disabled' : ''}>&#9650;</button>
+              <span class="vote-count ${voteClass}">${fact.votes}</span>
+              <button class="vote-btn ${userVote === 'down' ? 'downvoted' : ''}"
+                      onclick="vote('${fact.id}', 'down')"
+                      ${userVote ? 'disabled' : ''}>&#9660;</button>
+            </div>
+            <div>
+              <div class="community-fact-text">${escapeHtml(fact.text)}</div>
+              <div class="community-fact-meta">Submitted by ${escapeHtml(fact.submittedBy)}</div>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    // ============================================
+    // VOTING (writes to Firestore)
+    // ============================================
+
+    window.vote = async function(factId, direction) {
+      const votes = loadSessionVotes();
+      if (votes[factId]) return;
+
+      votes[factId] = direction;
+      saveSessionVotes(votes);
+
+      try {
+        // increment() is a special Firestore function that adds/subtracts
+        // from the current value without needing to read it first.
+        // This prevents race conditions when multiple people vote at once!
+        const factRef = doc(db, 'approved', factId);
+        await updateDoc(factRef, {
+          votes: increment(direction === 'up' ? 1 : -1)
+        });
+      } catch (error) {
+        console.error('Vote error:', error);
+      }
+    };
+
+    // ============================================
+    // RANDOM FACT GENERATOR
+    // ============================================
+
+    const randomFacts = [
       "A day on Venus is longer than a year on Venus. It takes 243 Earth days to rotate once but only 225 Earth days to orbit the Sun.",
       "There are more stars in the universe than grains of sand on all of Earth's beaches — about 70 billion trillion stars!",
       "Neutron stars are so dense that a teaspoon of their material would weigh about 6 billion tonnes.",
@@ -747,8 +883,6 @@
       "A year on Mercury is just 88 Earth days long.",
       "The Great Wall of China is NOT visible from space with the naked eye — this is a common myth!",
       "Earth's core is as hot as the surface of the Sun, at about 5,500°C.",
-
-      // 🐾 ANIMALS
       "Octopuses have three hearts, blue blood, and nine brains — one central brain and one in each arm.",
       "A group of flamingos is called a 'flamboyance'.",
       "Dolphins sleep with one eye open and half their brain awake so they can keep breathing and watch for predators.",
@@ -764,8 +898,6 @@
       "Axolotls can regrow their limbs, heart, and even parts of their brain.",
       "Tardigrades (water bears) can survive in the vacuum of space and extreme radiation.",
       "A woodpecker's tongue wraps around the back of its skull to cushion its brain while pecking.",
-
-      // 🧬 HUMAN BODY
       "Your body has about 37.2 trillion cells, and most of them are replaced regularly — you're literally a new person every few years!",
       "Your nose can remember 50,000 different scents.",
       "Humans share about 60% of their DNA with bananas.",
@@ -776,8 +908,6 @@
       "Your small intestine is about 6 metres long — roughly the height of a giraffe.",
       "Nerve signals in your body travel at speeds up to 250 miles per hour.",
       "The strongest muscle in your body (relative to its size) is the masseter — your jaw muscle.",
-
-      // 🔬 SCIENCE
       "If you could fold a piece of paper 42 times, it would reach the Moon.",
       "Hot water freezes faster than cold water in certain conditions — this is called the Mpemba effect.",
       "Bananas are naturally slightly radioactive because they contain potassium-40.",
@@ -788,8 +918,6 @@
       "If you squeezed out all the empty space in atoms, the entire human race could fit in the volume of a sugar cube.",
       "The average cloud weighs about 500,000 kg — roughly the weight of 80 elephants!",
       "Sound travels about 4.3 times faster in water than in air.",
-
-      // 💻 TECHNOLOGY & AI
       "The first computer 'bug' was an actual bug — a moth found inside Harvard's Mark II computer in 1947.",
       "The entire internet weighs about the same as a strawberry (about 50 grams) — that's the weight of all the electrons storing data.",
       "The first website ever created is still online. It was made by Tim Berners-Lee in 1991.",
@@ -800,8 +928,6 @@
       "The QWERTY keyboard layout was designed in 1873 and was meant to SLOW typists down to prevent typewriter jams.",
       "About 90% of the world's data was created in just the last two years.",
       "The word 'robot' comes from the Czech word 'robota', which means forced labour.",
-
-      // 🌍 GEOGRAPHY & NATURE
       "Honey never spoils. Archaeologists have found 3,000-year-old honey in Egyptian tombs that was still edible.",
       "Russia spans 11 time zones. When it's breakfast time on one side, it's bedtime on the other.",
       "The Amazon rainforest produces about 20% of the world's oxygen.",
@@ -812,8 +938,6 @@
       "Antarctica is classified as a desert because it gets very little precipitation.",
       "The longest river in the world, the Nile, is about 6,650 km long — roughly the distance from London to New York and back.",
       "Yellowstone National Park in the USA sits on top of a supervolcano that could erupt at any time (but probably won't for thousands of years).",
-
-      // 📚 HISTORY
       "Cleopatra lived closer in time to the Moon landing than to the building of the Great Pyramid.",
       "Oxford University is older than the Aztec Empire. Teaching at Oxford started in 1096; the Aztec Empire began around 1325.",
       "In 1932, Australia fought a war against emus — and lost. It's called the Great Emu War.",
@@ -824,8 +948,6 @@
       "The oldest known joke is from ancient Sumer, about 4,000 years ago, and it's a toilet joke.",
       "During World War II, a dog named Sergeant Stubby became the most decorated war dog in US history.",
       "The first person to be killed by a car was in 1869, and the car was going about 4 mph.",
-
-      // 🍕 FOOD
       "Strawberries aren't actually berries, but bananas are.",
       "It takes about 700 grapes to make one bottle of wine.",
       "Carrots were originally purple. Orange carrots were bred by the Dutch in the 17th century.",
@@ -836,8 +958,6 @@
       "Ketchup was once sold as medicine in the 1830s to cure diarrhea.",
       "An ear of corn always has an even number of rows.",
       "Eating too many carrots can turn your skin slightly orange — it's called carotenemia.",
-
-      // 🎮 RANDOM & FUN
       "The inventor of the Pringles can, Fredric Baur, was buried in one when he died.",
       "If you shuffle a deck of cards properly, the order will almost certainly never have existed before in the history of the universe.",
       "A jiffy is an actual unit of time — it's 1/100th of a second.",
@@ -848,8 +968,6 @@
       "The total length of all the DNA in your body would stretch from the Sun to Pluto and back — multiple times.",
       "The hashtag symbol (#) is technically called an octothorpe.",
       "LEGO is the world's largest tyre manufacturer — they make over 300 million tiny tyres a year.",
-
-      // 🔢 MATHS & NUMBERS
       "If you write out every number in English (one, two, three...), you won't use the letter 'b' until you reach 'one billion'.",
       "A googol is the number 1 followed by 100 zeros. Google's name is a misspelling of this word.",
       "111,111,111 multiplied by 111,111,111 equals 12,345,678,987,654,321 — a perfect palindrome!",
@@ -857,1278 +975,326 @@
       "There are 43,252,003,274,489,856,000 possible combinations on a Rubik's Cube."
     ];
 
-    // ============================================
-    // VARIABLES (boxes that store information)
-    // ============================================
-    //
-    // Hugo - "let" creates a variable. Think of it like labelling a box.
-    //   let score = 0    ← creates a box called "score" with 0 inside
-    //   score = 5        ← changes what's in the box to 5
+    let factsShown = 0;
 
-    let funnyFacts = [
-      "A group of pugs is called a 'grumble'. Honestly, that's perfect.",
-      "Crows can hold grudges against specific people for years. Sleep well tonight.",
-      "A flamingo can only eat when its head is upside down. Try eating your dinner like that.",
-      "Squirrels forget where they bury about 80% of their nuts, which accidentally plants thousands of trees every year.",
-      "Penguins propose to their partners with a pebble. Romance isn't dead, it's just rocky.",
-      "A shrimp's heart is in its head. Talk about thinking with your heart!",
-      "Cats spend 70% of their lives sleeping. Finally, a lifestyle I can aspire to.",
-      "A crocodile cannot stick its tongue out. The ultimate poker face.",
-      "Sloths can hold their breath longer than dolphins — up to 40 minutes!",
-      "Wombat poo is cube-shaped. Nobody asked, but now you know.",
-      "Dogs can learn up to 250 words and gestures. Most of them choose to ignore you anyway.",
-      "A group of cats is called a 'clowder'. Sounds like a cat trying to say 'chowder'.",
-      "Kangaroos can't walk backwards. They only look forward in life, literally.",
-      "Elephants think humans are cute, the same way we think puppies are cute.",
-      "Ostriches can run faster than horses, and the males can roar like lions.",
-      "Goats have accents. A Yorkshire goat sounds different from a London goat. Probably.",
-      "A snail has about 20,000 teeth. And zero dentist appointments.",
-      "Rats laugh when they're tickled. Scientists actually tested this.",
-      "Dolphins have names for each other and will respond when called.",
-      "Otters have a favourite rock they keep in a special pouch.",
-      "A group of hedgehogs is called an 'array'. Even nature uses programming terms.",
-      "Polar bear fur is actually transparent, not white. The fur just looks white because of how it reflects light.",
-      "Parrots name their babies. Each chick gets a unique sound from its parents.",
-      "Cows produce more milk when they listen to slow music. Mooo-zak, if you will.",
-      "Honeybees can be trained to detect explosives. Buzz off, bomb!",
-      "An octopus has three hearts and blue blood. It's basically an alien.",
-      "A baby puffin is called a 'puffling'. That's the cutest word ever invented.",
-      "Ants don't have lungs. They breathe through tiny holes in their body.",
-      "Tigers have striped skin, not just striped fur. They're committed to the look.",
-      "A group of jellyfish is called a 'smack'. Getting stung by one does feel like that.",
-      "Pigeons can do maths. They can learn abstract number rules — seriously.",
-      "Turkeys can blush. Their heads turn bright red when they're excited or scared.",
-      "Sea horses are the only animals where the males give birth. Dads doing their bit!",
-      "Giraffes only need 30 minutes of sleep a day. They'd make terrible teenagers.",
-      "Butterflies can taste with their feet. Imagine tasting your shoes every step.",
-      "A chameleon's tongue is twice the length of its body. Makes eating crisps from the other side of the room possible.",
-      "Baby elephants suck their trunks for comfort, just like human babies suck their thumbs.",
-      "Starfish don't have brains. Some Monday mornings, I can relate.",
-      "A bee visits about 2 million flowers to make one pound of honey. Talk about a work ethic.",
-      "Some cats are allergic to humans. The ultimate reverse uno card.",
-      "Crows will bring gifts to people who feed them. Usually shiny things, buttons, or paperclips.",
-      "A flea can jump up to 150 times its own body length. That's like a human jumping over a skyscraper.",
-      "Koalas sleep up to 22 hours a day. They make cats look productive.",
-      "Horses can't vomit. That's one way to commit to your meals.",
-      "A group of ravens is called an 'unkindness'. Ravens need a better PR team.",
-      "Ducks have regional accents. City ducks quack louder than country ducks.",
-      "Spiders can't fly, but some baby spiders travel by 'ballooning' — floating on silk threads through the air.",
-      "A woodpecker's tongue wraps all the way around its skull. Nature's seatbelt.",
-      "Dogs' nose prints are unique, like human fingerprints. CSI: Puppy Edition.",
-      "Hummingbirds are the only birds that can fly backwards. The Michael Jackson of the bird world.",
-      "Peanut butter can be turned into diamonds with enough pressure. That's one expensive sandwich.",
-      "Apples are 25% air, which is why they float. They're the pool toys of the fruit world.",
-      "Strawberries aren't berries, but bananas are. Fruit classification is a total mess.",
-      "Honey is essentially bee vomit. Enjoy your toast!",
-      "Coconuts kill more people per year than sharks. Fear the coconut.",
-      "The average person eats about 35 tonnes of food in their lifetime. That's roughly 7 elephants.",
-      "Ketchup used to be sold as medicine. 'Take two squirts and call me in the morning.'",
-      "A single spaghetti noodle is called a 'spaghetto'. You're welcome, grammar fans.",
-      "Chocolate was once used as money. The tastiest economy ever.",
-      "Crackers have holes in them to prevent air bubbles during baking, not for decoration.",
-      "Cucumbers are 95% water. They're basically crunchy water.",
-      "Lemons float but limes sink. Even citrus fruits have different personalities.",
-      "The most stolen food in the world is cheese. There's a whole black market for cheddar.",
-      "Fortune cookies were invented in California, not China. Plot twist!",
-      "A can of Spam is opened every 3 seconds. Someone really loves that stuff.",
-      "Popsicles were invented by an 11-year-old by accident. Kids: 1, Adults: 0.",
-      "Carrots were originally purple. Orange ones were bred by the Dutch as a political statement.",
-      "Potatoes have more chromosomes than humans. They're genetically more complex than you.",
-      "Eating too many carrots can turn you orange. Oompa Loompa vibes.",
-      "The world's most expensive coffee is made from beans pooped out by a cat. Yum?",
-      "Ripe cranberries bounce like rubber balls. Try it and see!",
-      "Pineapples take about two years to grow. That's a lot of patience for a pizza topping.",
-      "The average person will eat about 70,000 meals in their lifetime.",
-      "Grapes explode in the microwave. This is not a suggestion, it's a fact.",
-      "Nutmeg is technically a hallucinogen in very large doses. Don't go overboard on the eggnog.",
-      "Avocados are actually berries. And raspberries aren't. Nothing makes sense anymore.",
-      "The most popular pizza topping worldwide is mushroom. Pineapple fans are crying.",
-      "Humans share 60% of their DNA with bananas. You're part fruit.",
-      "A jar of Nutella is sold every 2.5 seconds. The world runs on chocolate spread.",
-      "McDonalds once made bubblegum-flavoured broccoli. Kids still said no.",
-      "Almonds are part of the peach family. Surprise relatives.",
-      "Bananas are slightly radioactive due to their potassium content. You're eating tiny amounts of radiation.",
-      "The first soup was made from hippopotamus. Gordon Ramsay was not available for comment.",
-      "Figs are technically not a fruit — they're an inverted flower.",
-      "Pizza Hut was once the largest buyer of kale in America — but only used it as decoration for their salad bar.",
-      "White chocolate isn't technically chocolate. Your whole life has been a lie.",
-      "An average ear of corn has about 800 kernels arranged in 16 rows. It's very organised.",
-      "More people are allergic to cow's milk than any other food. Moo-ve over, milk.",
-      "Cashews grow on the bottom of cashew apples. They look ridiculous.",
-      "Sandwich was named after the Earl of Sandwich who was too busy gambling to eat a proper meal.",
-      "Peas were one of the first vegetables to be canned, back in the 1700s.",
-      "Jelly beans take 7 to 21 days to make. Each one is a tiny work of art.",
-      "The world record for the longest pizza is over 1.9 km. That's a lot of delivery.",
-      "An average cloud weighs about 500,000 kg, but you can't eat it. Disappointing.",
-      "If you ate nothing but potatoes, you'd actually get most of the nutrients you need.",
-      "German chocolate cake was invented in Texas, not Germany.",
-      "The tallest cake ever made was over 33 metres high. That's roughly an 8-storey building.",
-      "The oldest known recipe is for beer. Priorities were correct from the start.",
-      "Ranch dressing is dyed white. Its natural colour is more of a pale yellow.",
-      "Tomato ketchup flows out of the bottle at 0.028 miles per hour — about as fast as a snail.",
-      "You can't hum while holding your nose. Go on, try it. I'll wait.",
-      "Your stomach gets a new lining every 3 to 4 days. Otherwise it would digest itself!",
-      "Humans glow in the dark, but the light is 1,000 times weaker than our eyes can see.",
-      "Your brain is 73% water. So when you're dehydrated, you're literally running low on brain.",
-      "You blink about 20 times per minute. That's 10 million times a year.",
-      "Babies don't have kneecaps. They develop them between ages 2 and 6.",
-      "Goosebumps originally helped our ancestors' body hair stand up to look bigger and scarier. Now they just make us feel cold.",
-      "Your left lung is smaller than your right to make room for your heart. How romantic.",
-      "Fingernails grow nearly 4 times faster than toenails. Your hands are overachievers.",
-      "The average person walks about 100,000 miles in their lifetime. That's four trips around the Earth.",
-      "You're taller in the morning than at night. Gravity squishes your spine throughout the day.",
-      "Your tongue print is completely unique, just like your fingerprints.",
-      "Humans can see more shades of green than any other colour. That's why nature looks so detailed.",
-      "Your skeleton is completely replaced every 10 years. Spooky.",
-      "Sneezes travel at about 100 mph. Cover your nose, people!",
-      "The human nose can detect over 1 trillion different scents. Yet we still can't find what's gone off in the fridge.",
-      "Your body produces enough heat in 30 minutes to boil half a gallon of water.",
-      "Taste buds only last about 10 days before being replaced. Your mouth is constantly renovating.",
-      "About 80% of your brain is water. You're basically a thinking water balloon.",
-      "Humans shed about 600,000 skin particles every hour. You're basically snowing.",
-      "Your brain generates enough electricity to power a small light bulb. You really do have bright ideas.",
-      "The acid in your stomach is strong enough to dissolve metal. Don't test this.",
-      "Babies are born with about 300 bones, but adults only have 206 — they fuse together.",
-      "Every person has a unique smell, except identical twins, who smell the same.",
-      "Your body has enough carbon in it to make about 900 pencils.",
-      "The average person produces enough saliva in their lifetime to fill two swimming pools. Gross but true.",
-      "If the human brain were a computer, it could perform 38 thousand trillion operations per second.",
-      "Humans and giraffes have the same number of neck bones — seven!",
-      "Your eyes can distinguish about 10 million different colours. Unless you're looking at paint swatches, then they all look the same.",
-      "The small intestine is about 6 metres long but packed into a space the size of your fist.",
-      "You lose about 80 hairs a day. It's normal, don't panic.",
-      "The strongest muscle in your body is your tongue. Use it wisely.",
-      "It's physically impossible to lick your own elbow. About 75% of people who read this will try.",
-      "Your ears and nose never stop growing. By 90, you'll look like a completely different person.",
-      "The human body contains enough iron to make a small nail.",
-      "You breathe about 20,000 times a day without even thinking about it.",
-      "Laughing 100 times is equivalent to 15 minutes on an exercise bike. Best workout ever.",
-      "Your thumb is the same length as your nose. Don't check this in public.",
-      "The surface area of a human lung is roughly the same size as a tennis court.",
-      "Humans are the only animals that blush. It's our embarrassment superpower.",
-      "If you laid all your blood vessels end to end, they'd stretch about 100,000 miles — enough to go around the Earth four times.",
-      "The average person farts 14 times a day. You're welcome for this information.",
-      "Your teeth are the only part of your body that can't repair themselves.",
-      "You spend about 2 weeks of your life waiting at traffic lights.",
-      "The average person spends 6 months of their lifetime waiting for red lights to turn green.",
-      "Your brain uses 20% of all the oxygen you breathe. It's very high maintenance.",
-      "Every square inch of your skin has about 32 million bacteria on it. You're a walking ecosystem.",
-      "The average person will spend about 26 years sleeping in their lifetime.",
-      "Right-handed people tend to chew food on the right side. Left-handers chew on the left. Weird.",
-      "Your body is made up of about 7 octillion atoms. That's a 7 with 27 zeros after it.",
-      "In 1932, Australia declared war on emus. The emus won. This is real history.",
-      "The ancient Romans used urine as mouthwash. They believed it whitened teeth.",
-      "Einstein's brain was stolen by the doctor who performed his autopsy. He kept it in a jar for 20 years.",
-      "Cleopatra lived closer to the invention of the iPhone than to the building of the Great Pyramid.",
-      "In medieval times, animals could be put on trial and even sentenced to prison.",
-      "The shortest war in history lasted 38 minutes — Britain vs Zanzibar in 1896.",
-      "Ancient Egyptians used slabs of stone as pillows. Sweet dreams indeed.",
-      "Abraham Lincoln was a champion wrestler before becoming president. Don't mess with Honest Abe.",
-      "In the 1800s, dentures were commonly made from dead soldiers' teeth. Called 'Waterloo teeth'.",
-      "The Vikings used to give kittens to brides as wedding presents.",
-      "Napoleon was once attacked by a horde of wild rabbits during a hunting trip. He ran away.",
-      "Ancient Romans had a goddess of sewers. Her name was Cloacina.",
-      "The Eiffel Tower was supposed to be temporary and was nearly torn down in 1909.",
-      "Queen Elizabeth II was a trained mechanic during World War II.",
-      "In 1835, someone tried to assassinate the King of France with a hand-made machine gun. It missed.",
-      "The Great Fire of London in 1666 destroyed 13,200 houses but only officially killed 6 people.",
-      "Oxford University is older than the Aztec Empire. Classes started in 1096!",
-      "King Henry VIII had people whose job was to wipe his bottom. The title was 'Groom of the Stool'.",
-      "In ancient Rome, stepping into a house with your left foot first was considered bad luck.",
-      "The oldest 'your mum' joke was discovered on a 3,500-year-old Babylonian tablet.",
-      "Genghis Khan exempted teachers and doctors from taxes. Even conquerors need good schools.",
-      "During the Victorian era, people took photos with their dead relatives. It was considered normal.",
-      "Julius Caesar was once kidnapped by pirates. He joked that his ransom should be higher.",
-      "The Salem witch trials only lasted about a year, but 20 people were executed.",
-      "Thomas Edison electrocuted an elephant to prove a point about electricity. Not his finest moment.",
-      "Aztecs used cacao beans as currency. Imagine paying your rent in chocolate.",
-      "In 1518, a 'dancing plague' hit Strasbourg. People danced uncontrollably for days.",
-      "The ancient Greeks had a word for the day after tomorrow: 'overmorrow'. We should bring this back.",
-      "Ketchup was sold as medicine in the 1830s. The prescription: more ketchup.",
-      "The first alarm clock could only ring at 4 am. Because apparently everyone needed to suffer.",
-      "In 1908, the New York to Paris car race went westward — through Alaska and Siberia!",
-      "Ancient Egyptians worshipped over 1,400 different gods. Hard to remember all those birthdays.",
-      "Abraham Lincoln created the Secret Service on the day he was assassinated.",
-      "The first known vending machine was invented in ancient Egypt — it dispensed holy water.",
-      "Pirates wore eye patches to keep one eye adapted to the dark below deck, not because they were injured.",
-      "Coca-Cola originally contained cocaine. About 9 milligrams per glass.",
-      "The guillotine was actually named after a doctor who argued it was a more humane method.",
-      "In 1838, the first transatlantic steamship race ended with both ships running out of coal.",
-      "Roman gladiators were basically the rock stars of their day — they even endorsed products.",
-      "The first flushing toilet was invented in 1596, but it took 200 years for the idea to catch on.",
-      "Tug of war used to be an Olympic sport. It was dropped in 1920.",
-      "Ancient Mayans used chocolate in religious ceremonies. Church would be way better with hot cocoa.",
-      "Bubble wrap was originally invented as wallpaper. Imagine that decorating choice.",
-      "In the 1700s, pineapples were so expensive that people would rent them for parties.",
-      "The first ever speeding ticket was issued in 1902, for going a blazing 45 mph.",
-      "Victorian people had 'fern fever' — they were obsessed with collecting and displaying ferns.",
-      "In 1891, London had an outbreak of people wearing top hats so tall they blocked the view at theatres.",
-      "The British Empire once fought a war over an ear — literally called 'The War of Jenkins' Ear'.",
-      "Benjamin Franklin wanted the turkey, not the eagle, as America's national bird.",
-      "The Great Wall of China was held together with sticky rice mortar. Delicious architecture.",
-      "There's a planet that rains glass sideways. It's called HD 189733 b. Lovely holiday destination.",
-      "A day on Venus is longer than a year on Venus. Even Venus can't get its schedule right.",
-      "Astronauts grow up to 2 inches taller in space. Finally, a reason to go!",
-      "There's a giant cloud of alcohol in space. It's called Sagittarius B2 and it's 150 light-years across.",
-      "Saturn could float in a bathtub if you found one big enough. Good luck with that.",
-      "The sunset on Mars is blue. Earth isn't even the weirdest planet in our own solar system.",
-      "There are more stars in the universe than grains of sand on every beach on Earth. Way more.",
-      "A full NASA space suit costs about $12 million. Most of that is the backpack.",
-      "Neutron stars are so dense that a teaspoon of one would weigh about 6 billion tonnes. Heavy snack.",
-      "You could fit all the other planets in our solar system between Earth and the Moon.",
-      "The Moon is slowly moving away from Earth — about 1.5 inches per year. Rude.",
-      "Space is completely silent. No one can hear you scream. Or play drums.",
-      "There's a diamond planet called 55 Cancri e. Engagement rings from space!",
-      "A year on Mercury is just 88 Earth days. Their birthdays come round fast.",
-      "The Sun makes up 99.86% of our solar system's mass. It's a bit of an attention-seeker.",
-      "If you could drive to space at 60mph, you'd get there in about an hour.",
-      "The ISS travels at 17,500 mph. That's like flying from London to New York in 12 minutes.",
-      "There's a volcano on Mars called Olympus Mons that's 3 times the height of Everest.",
-      "Footprints on the Moon will last 100 million years because there's no wind to blow them away.",
-      "The largest known star, UY Scuti, could fit almost 5 billion suns inside it.",
-      "Astronauts' dirty laundry is burned up in Earth's atmosphere. Ultimate way to avoid doing washing.",
-      "One million Earths could fit inside the Sun. And the Sun is just a medium-sized star!",
-      "If two pieces of metal touch in space, they permanently bond together. Space welding!",
-      "It takes 8 minutes and 20 seconds for light to travel from the Sun to Earth.",
-      "There are more possible moves in a game of chess than atoms in the observable universe.",
-      "Neptune's wind speeds can reach 1,200 mph. Earth's strongest hurricane is a gentle breeze compared.",
-      "The first animals in space were fruit flies, launched by the US in 1947.",
-      "On Venus, it snows metal. The mountains are coated in a metallic frost.",
-      "Jupiter's Great Red Spot is a storm that's been raging for at least 400 years.",
-      "You'd weigh about 250 lbs on Jupiter if you weigh 100 lbs on Earth. Time to skip Jupiter.",
-      "The core of Jupiter might be made of liquid metallic hydrogen. Scientists aren't 100% sure.",
-      "Pluto is smaller than Russia. Puts its demotion from planet status in perspective.",
-      "Light from the nearest star (besides the Sun) takes over 4 years to reach us.",
-      "There's a lake of liquid methane on Saturn's moon Titan. Don't light a match.",
-      "The Milky Way galaxy is moving through space at about 1.3 million mph. Buckle up.",
-      "There are rogue planets floating through space not orbiting any star. Cosmic loners.",
-      "A soup spoon of neutron star would weigh the same as Mount Everest.",
-      "Saturn has 146 known moons. It's the collector of the solar system.",
-      "A year on Pluto is 248 Earth years. Happy birthday... eventually.",
-      "Astronauts have voted from space in US elections. Now that's a postal vote.",
-      "There's a planet called WASP-76b where it rains iron. Worst weather forecast ever.",
-      "The Voyager 1 spacecraft is the farthest human-made object from Earth — over 15 billion miles away.",
-      "Space technically starts only 62 miles above Earth. You're closer to space than you think.",
-      "If you could compress the Earth to the size of a marble, it would become a black hole.",
-      "The first music played in space was 'Jingle Bells' on a harmonica in 1965.",
-      "Uranus rotates on its side. It's the planet that just can't stand up straight.",
-      "There's a comet that smells like rotten eggs and almonds. Space stinks.",
-      "The largest known void in space is the Boötes Void — 330 million light-years of almost nothing.",
-      "Mars has the tallest mountain AND the deepest canyon in our solar system.",
-      "The footprint Neil Armstrong left on the Moon is still there, completely untouched.",
-      "The first computer bug was an actual bug — a moth stuck in a Harvard computer in 1947.",
-      "Google's first storage was made of LEGO. Ten 4GB hard drives in a LEGO case.",
-      "The first email was sent in 1971. No one remembers what it said — probably 'test'.",
-      "The first alarm clock could only ring at 4am. That's just cruel.",
-      "Nintendo was founded in 1889 — they originally made playing cards.",
-      "The word 'robot' comes from Czech and means 'forced labour'. Poor robots.",
-      "More people have mobile phones than have toilets. Priorities, everyone.",
-      "Alaska is the only US state whose name can be typed on a single row of a keyboard.",
-      "The average person checks their phone 96 times a day. That's once every 10 minutes.",
-      "92% of the world's money exists only digitally. The rest is in your couch cushions.",
-      "Email existed before the World Wide Web. The web was invented in 1989; email was 1971.",
-      "The Firefox logo isn't actually a fox — it's a red panda. Mind blown.",
-      "The first YouTube video was about a trip to the zoo. Uploaded April 23, 2005.",
-      "WiFi doesn't stand for anything. It's not 'Wireless Fidelity'. It's just a made-up name.",
-      "Amazon originally only sold books. Now it sells everything including spaceships (sort of).",
-      "The first text message ever sent just said 'Merry Christmas'. It was December 1992.",
-      "A floppy disk could hold about 1.44 MB. A single photo on your phone is bigger than that.",
-      "The QWERTY keyboard was designed to SLOW typists down. It was to prevent typewriter jams.",
-      "It would take about 5 years to watch every video on YouTube. New ones are uploaded every second.",
-      "More people have been to the Moon than have scored 100 in Flappy Bird.",
-      "The first tweet ever sent said 'just setting up my twttr'. Historic stuff.",
-      "The @ symbol was nearly extinct before email brought it back.",
-      "Comic Sans was designed for a children's software program. It escaped and went everywhere.",
-      "The inventor of the USB says it takes about 3 tries to plug one in. Even he can't do it first try.",
-      "There are more fake flamingos in the world than real ones. Lawn decorations won.",
-      "Samsung started as a grocery store in South Korea in 1938.",
-      "The entire Wikipedia can be downloaded as a single file. It's about 22 GB.",
-      "The first computer mouse was made of wood. By Douglas Engelbart in 1964.",
-      "There are about 3.5 billion Google searches per day. That's a lot of 'how to' questions.",
-      "The original iPhone had only 2 megapixels. Today's phones have 50+.",
-      "The word 'CAPTCHA' stands for 'Completely Automated Public Turing test to tell Computers and Humans Apart'. Catchy.",
-      "If you searched Google for 'Google' it used to crash the internet. Well, almost.",
-      "GPS is free for the world to use because the US Air Force pays for it.",
-      "A single Google search uses more computing power than the entire Apollo moon mission.",
-      "The first domain name ever registered was symbolics.com in 1985.",
-      "The inventor of the Gameboy also invented the original Game & Watch. Legend.",
-      "About 90% of texts are read within 3 minutes of being sent. No pressure.",
-      "The first website is still online: info.cern.ch. It looks exactly like 1991.",
-      "Bluetooth is named after a Viking king — Harald Bluetooth — who united Danish tribes.",
-      "A typical smartphone has more computing power than all of NASA had in 1969.",
-      "There are approximately 500 hours of video uploaded to YouTube every single minute.",
-      "Alexa is always listening. Just thought you should know. Sweet dreams.",
-      "The computer in your microwave is more powerful than the one that guided Apollo 11.",
-      "Over 300 hours of video are uploaded to YouTube every minute. Most of it is cat videos.",
-      "Java was originally called 'Oak' after a tree outside the programmer's office window.",
-      "The word 'algorithm' comes from a 9th-century Persian mathematician named al-Khwarizmi.",
-      "The first photograph ever taken required an 8-hour exposure. Say cheese... and hold it... forever.",
-      "The world's first webcam was used to monitor a coffee pot at Cambridge University.",
-      "The world's first computer programmer was Ada Lovelace, in the 1840s. Girl power!",
-      "There are more people playing video games right now than the entire population of Canada.",
-      "Canada has more lakes than the rest of the world combined. They're lake hoarders.",
-      "Russia is bigger than Pluto. That's a country vs a (former) planet.",
-      "There are more people living in California than in all of Canada.",
-      "The shortest flight in the world is 57 seconds — between two Scottish islands.",
-      "Australia is wider than the Moon. Seriously, measure it.",
-      "Finland has more saunas than cars. Priorities: sorted.",
-      "The name 'Australia' comes from the Latin word for 'southern'. Not very creative.",
-      "France is the most visited country in the world. Mostly for the croissants.",
-      "The Amazon River once flowed in the opposite direction. It changed its mind.",
-      "Iceland has no mosquitoes. Moving there immediately.",
-      "Liechtenstein and Haiti accidentally had the same flag until 1936. Awkward at the Olympics.",
-      "In Switzerland, it's illegal to own just one guinea pig because they get lonely.",
-      "Canada's official phone number is 1-800-O-CANADA. Really.",
-      "Parts of Africa are in all four hemispheres — north, south, east, and west.",
-      "The smallest country in the world, Vatican City, has its own post office, telephone system, and radio station.",
-      "There's a town in Norway called Hell. It freezes over every winter.",
-      "The entire state of Wyoming only has two escalators. And they're in the same city.",
-      "Scotland's national animal is the unicorn. Not kidding.",
-      "Brazil is named after a nut. The Brazil nut, obviously.",
-      "New Zealand was the last major landmass to be settled by humans.",
-      "There's a place in France called 'Y'. That's the whole name.",
-      "The Dead Sea is so salty you float without trying. It's also not actually a sea — it's a lake.",
-      "More people visit France every year than actually live in France.",
-      "Alaska is simultaneously the most northern, western, AND eastern state in the US.",
-      "Vatican City has the highest crime rate per capita of any country. Mostly pickpocketing.",
-      "Oxford University is older than the Aztec civilisation.",
-      "Lake Superior is so big it has waves like an ocean.",
-      "Russia has 11 time zones. Morning tea on one side, bedtime cocoa on the other.",
-      "Montana has 3 times more cows than people.",
-      "The Sahara Desert is larger than the entire United States.",
-      "There's a village in Wales called Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch. Good luck.",
-      "Istanbul is the only city in the world on two continents — Europe and Asia.",
-      "The Pacific Ocean is bigger than all the land on Earth put together.",
-      "There are no rivers in Saudi Arabia. Not a single one.",
-      "Rome is older than Italy. The city existed for centuries before Italy became a country.",
-      "Greenland can't join FIFA because not enough grass grows there for a football pitch.",
-      "The average depth of the ocean is about 3.7 km. We've explored less than 5% of it.",
-      "There are more people living in Tokyo than in all of Canada.",
-      "Antarctica is the largest desert on Earth. Yes, it counts as a desert.",
-      "North Korea and Finland are separated by just one country — Russia.",
-      "If you dug a hole straight through the Earth from the UK, you'd end up in the ocean near New Zealand.",
-      "The Canary Islands are named after dogs, not canaries. 'Canaria' means 'island of dogs'.",
-      "There's a place in Mexico called 'Slaughter Beach'. The tourism board works overtime.",
-      "Africa is the only continent in all four hemispheres.",
-      "Mount Everest grows about 4mm taller every year. Overachiever.",
-      "There are vending machines in Japan that sell everything from eggs to umbrellas to ties.",
-      "Maine is the closest US state to Africa. Not Florida — Maine!",
-      "At the border of Spain and Portugal, there's a zipline that crosses between the two countries.",
-      "Bhutan measures national success by Gross National Happiness instead of GDP.",
-      "The longest place name in the world is in New Zealand and has 85 letters.",
-      "A group of lawyers is called a 'greed'. Well, someone thought so anyway.",
-      "The average person spends 2 weeks of their life waiting for traffic lights to change.",
-      "The inventor of the Pringles can was buried in one. He literally asked for this.",
-      "Your chances of being killed by a vending machine are twice as high as being killed by a shark.",
-      "A 'jiffy' is an actual unit of time — 1/100th of a second.",
-      "The dot over the letter 'i' is called a 'tittle'. There's your Scrabble word.",
-      "The hashtag symbol is technically called an 'octothorpe'. Try dropping that at dinner.",
-      "LEGO makes more tyres than any other company in the world — over 300 million a year.",
-      "If you shuffle a deck of cards, the order has almost certainly never existed before. Ever.",
-      "Scotland has 421 words for 'snow'. They really need them all.",
-      "A 'buttload' is a real unit of measurement — about 126 gallons.",
-      "The shortest complete sentence in English is 'I am.' Or arguably, 'Go.'",
-      "Banging your head against a wall burns about 150 calories an hour. Not recommended.",
-      "It's impossible to sneeze with your eyes open. Don't try too hard.",
-      "The name 'Wendy' was made up for the book Peter Pan. It didn't exist before 1904.",
-      "A crocodile can't move its tongue. So no cheeky licking.",
-      "The average four-year-old asks about 400 questions a day. Parents deserve medals.",
-      "You replace every atom in your body roughly every 7 years. You're not even you anymore.",
-      "TYPEWRITER is the longest word you can type using only the top row of a keyboard.",
-      "The fear of long words is called 'hippopotomonstrosesquippedaliophobia'. Cruel irony.",
-      "A 'moment' was a medieval unit of time equal to 90 seconds.",
-      "Bubble wrap was originally invented to be wallpaper. Imagine the temptation.",
-      "The Monopoly man doesn't actually have a monocle. Mandela effect strikes again.",
-      "People used to say 'ahoy' instead of 'hello' when answering the phone.",
-      "The average person will spend about 6 months of their life waiting for red lights.",
-      "There are more possible games of chess than atoms in the observable universe.",
-      "Only 8% of the world's money exists as physical cash.",
-      "A 'zeptosecond' is a trillionth of a billionth of a second. Scientists have measured one.",
-      "The word 'nerd' was first coined by Dr. Seuss in 1950.",
-      "The King of Hearts is the only king in a standard deck without a moustache.",
-      "'Almost' is the longest English word with all letters in alphabetical order.",
-      "A tennis ball is fuzzy to slow it down. Without the fuzz, it would go too fast to play with.",
-      "In an average lifetime, you'll walk the equivalent of 5 times around the Earth.",
-      "Humans are the only animals that enjoy spicy food. Every other animal avoids it.",
-      "If Pinocchio says 'my nose will now grow', it creates a paradox.",
-      "Maine is the only US state with a one-syllable name.",
-      "A cloud can weigh over a million pounds. They just look light and fluffy.",
-      "You are 1% shorter in the evening than in the morning.",
-      "There are 293 ways to make change for a US dollar.",
-      "The total weight of ants on Earth is greater than the total weight of humans.",
-      "Your shoelaces come undone because of a combination of stomping and whipping forces.",
-      "The opposite sides of a die always add up to 7.",
-      "Wearing a tie reduces blood flow to the brain by 7.5%. Casual Friday, anyone?",
-      "You can hear a blue whale's heartbeat from over 2 miles away.",
-      "The plastic tips on shoelaces are called 'aglets'.",
-      "There's a basketball court on the top floor of the US Supreme Court. It's called 'the highest court in the land'.",
-      "A group of giraffes is called a 'tower'. Because of course it is.",
-      "A bolt of lightning is 5 times hotter than the surface of the Sun.",
-      "Honey never expires. 3,000-year-old honey from Egyptian tombs was still edible.",
-      "The average person laughs about 13 times a day. Let's bump that number up!",
-      "Hot water freezes faster than cold water and nobody fully understands why. It's called the Mpemba effect.",
-      "Water can boil and freeze at the same time. It's called the triple point, and it's bonkers.",
-      "If you fold a piece of paper 42 times, it would reach the Moon.",
-      "If the Sun were the size of a beach ball, Jupiter would be the size of a golf ball and Earth would be a pea.",
-      "A teaspoon of soil has more organisms in it than there are people on Earth.",
-      "Sound travels about 4 times faster in water than in air. Dolphins are basically on 4x speed.",
-      "There are more trees on Earth than stars in the Milky Way — about 3 trillion trees.",
-      "The human body contains enough fat to make 7 bars of soap. Don't think about it too much.",
-      "Glass balls bounce higher than rubber balls. Physics is weird.",
-      "Lightning strikes Earth about 100 times every second. That's 8.6 million times a day.",
-      "There's a species of jellyfish that is biologically immortal. It just keeps resetting itself.",
-      "The average cumulus cloud weighs about 1.1 million pounds. Flying elephants, basically.",
-      "If you removed all the empty space from atoms in all people, humanity would fit in a sugar cube.",
-      "Oxygen has a colour — it's pale blue when in liquid form.",
-      "Diamonds can be made from peanut butter. Scientists have actually done this.",
-      "A single bolt of lightning contains enough energy to toast 100,000 slices of bread.",
-      "Babies have about 60 more bones than adults. They fuse as you grow up.",
-      "Cornflakes have more genes than humans. We are genetically simpler than breakfast cereal.",
-      "Venus is the only planet that spins clockwise. Rebel.",
-      "If you pour a handful of salt into a glass of water, the water level will go down, not up.",
-      "The coldest temperature ever recorded was -89.2°C in Antarctica. Bit nippy.",
-      "Your DNA is about 6 feet long, but packed into a cell that's tiny. Nature's origami.",
-      "Cats always land on their feet because of a special 'righting reflex' in their inner ear.",
-      "The speed of darkness is technically the same as the speed of light — it's just light leaving.",
-      "If you drilled a tunnel through the Earth and jumped in, it would take 42 minutes to reach the other side.",
-      "A day on Mercury lasts 59 Earth days. Imagine waiting that long for bedtime.",
-      "Atoms are 99.9999999% empty space. You're basically made of nothing.",
-      "If every human on Earth jumped at the same time, it wouldn't affect Earth's orbit at all.",
-      "Hot and cold water sound different when being poured. You can actually tell by listening.",
-      "An ice cube takes more energy to melt than to heat from 0°C to 100°C. Weird but true.",
-      "Your body produces about 25 million new cells each second. You're a factory.",
-      "Raindrops aren't actually tear-shaped — they're more like tiny hamburger buns.",
-      "There's a mushroom that can break through asphalt. Never underestimate fungi.",
-      "A cockroach can live for a week without its head. It eventually dies of thirst.",
-      "The average pencil can draw a line 35 miles long.",
-      "If you could squeeze all the water out of a watermelon, it would fill 14 drinking glasses.",
-      "Your brain is more active when you're asleep than when you're watching TV.",
-      "The Sun loses about 4 million tonnes of mass every second through nuclear fusion.",
-      "Bananas are slightly curved because they grow towards the Sun. Heliotropical!",
-      "A bolt of lightning is about 1 inch wide but can be 5 miles long.",
-      "If you put Saturn in water, it would float — it's less dense than water.",
-      "There's enough DNA in your body to stretch from the Sun to Pluto and back — 17 times.",
-      "Honey is the only food that includes all the substances necessary to sustain life.",
-      "A single cloud can weigh more than 80 elephants.",
-      "The smell of freshly cut grass is actually a plant distress signal.",
-      "If you spin a ball when you drop it, it flies. It's called the Magnus effect.",
-      "There's a species of frog that can freeze solid in winter and thaw out alive in spring.",
-      "The universe has a colour — it's called 'cosmic latte'. It's a beigey-white.",
-      "Sharks existed before trees. They've been around for about 400 million years.",
-      "If Earth's history were compressed into 24 hours, humans would appear at 11:58:43 PM.",
-      "The word 'school' comes from the ancient Greek word for 'free time'. Oh the irony.",
-      "Albert Einstein failed his first university entrance exam. Look how that turned out.",
-      "A 'googol' is 1 followed by 100 zeros. Google misspelled it for their name.",
-      "The equals sign (=) was invented because a mathematician got tired of writing 'is equal to'.",
-      "Shakespeare invented over 1,700 words, including 'eyeball' and 'lonely'.",
-      "In the UK, it's illegal to handle a salmon under suspicious circumstances. Real law, look it up.",
-      "The letter 'E' is the most common letter in the English language.",
-      "The youngest person to ever publish a book was 4 years old.",
-      "The number four is the only number with the same amount of letters as its value.",
-      "If you write out pi to two decimal places and read it backwards, it spells 'pie'. (3.14 → PIE).",
-      "A 'baker's dozen' is 13 because bakers used to add an extra to avoid being fined for short measures.",
-      "There are no words in English that rhyme with 'orange'. Not perfectly, anyway.",
-      "If you spell out every number (one, two, three...), you won't use the letter A until 'one thousand'.",
-      "A 'pangram' is a sentence using every letter of the alphabet. Like 'the quick brown fox jumps over the lazy dog'.",
-      "The sentence 'the quick brown fox jumps over the lazy dog' uses every letter in the alphabet.",
-      "Zero is the only number that can't be represented in Roman numerals.",
-      "111,111,111 × 111,111,111 = 12,345,678,987,654,321. Maths is beautiful.",
-      "There are more ways to arrange a deck of cards than there are atoms on Earth.",
-      "The word 'set' has the most definitions of any English word — over 430.",
-      "If you wrote one number per second, it would take 12 days to count to a million.",
-      "'Stewardesses' is the longest word typed with only the left hand on a QWERTY keyboard.",
-      "A 'googolplex' is 10 to the power of a googol. You couldn't write all the zeros if you filled the universe.",
-      "The average pencil can write about 45,000 words.",
-      "Eleven plus two is an anagram of twelve plus one.",
-      "The word 'alphabet' comes from 'alpha' and 'beta' — the first two Greek letters.",
-      "There are 31,557,600 seconds in a year. You just spent one reading this.",
-      "Pi has been calculated to over 100 trillion digits. Nobody needs that many, but here we are.",
-      "The opposite of déjà vu is called 'jamais vu' — when something familiar suddenly seems brand new.",
-      "Dr. Seuss wrote 'Green Eggs and Ham' to win a bet that he couldn't write a book using only 50 words.",
-      "A 'zillion' isn't a real number. It's just a made-up word for 'a lot'.",
-      "The longest word without any repeated letters is 'uncopyrightable'.",
-      "Ancient Sumerians invented the first writing system — cuneiform — about 5,000 years ago.",
-      "The most commonly used letter in English is 'E'. The least common is 'Z'.",
-      "If you add up the numbers 1 to 100, you get 5,050. A schoolboy named Gauss figured this out aged 7.",
-      "The shortest war in history lasted 38 minutes. That's less than a school lesson.",
-      "The oldest university in the world is the University of Bologna, founded in 1088.",
-      "A 'fortnight' is 14 nights — two weeks. The word comes from Old English.",
-      "The word 'homework' literally means 'work done at home'. No one could argue it's poorly named.",
-      "Your brain weighs about 1.4 kg but uses 20% of your body's energy. Small but demanding.",
-      "The average teacher asks about 400 questions a day. Sound familiar, parents?",
-      "The word 'goodbye' comes from 'God be with ye'. It got shorter over time.",
-      "The exclamation mark (!) is sometimes called a 'bang' by programmers.",
-      "The word 'quiz' might have been invented on a bet in 1791 by a Dublin theatre owner.",
-      "In binary code, the number 42 is written as 101010. Very neat.",
-      "You can't say 'happiness' without saying 'ha' and 'pines'. Or 'pee'. Think about it.",
-      "The mathematical symbol for infinity (∞) is called a 'lemniscate'.",
-      "A 'contronym' is a word that is its own opposite. Like 'dust' (remove dust) or 'dust' (sprinkle dust).",
-      "English is the only major language that doesn't have a special name for its number system.",
-      "Typewriter is the longest word you can make using only the letters on one row of a keyboard.",
-      "The average person makes about 35,000 decisions every single day. Most of them are about food.",
-      "An average person walks past at least 16 murderers in their lifetime. Sleep tight!",
-      "The inventor of the fire hydrant is unknown — because the patent was destroyed in a fire.",
-      "A group of flamingos is called a 'flamboyance'. Nailed it.",
-      "Pigeons can tell the difference between paintings by Picasso and Monet. Art critics!",
-      "In 2006, someone tried to sell New Zealand on eBay. Bidding reached $3,000 before it was removed.",
-      "There's an island in Japan populated almost entirely by rabbits.",
-      "Movie trailers were originally shown AFTER the movie — that's why they're called 'trailers'.",
-      "A 'geriatric pregnancy' is any pregnancy over age 35. Doctors need to work on their branding.",
-      "Oxford English Dictionary's word of the year in 2015 was an emoji — the crying-laughing face.",
-      "There's a sport called 'chess boxing' — you alternate between chess and boxing rounds.",
-      "Cows moo in regional accents. Somerset cows sound different from Scottish cows.",
-      "A group of rhinos is called a 'crash'. Very on-brand.",
-      "In Japan, there's a hotel staffed by robots, including a robot dinosaur receptionist.",
-      "Astronauts can't cry in space — tears just form into floating blobs.",
-      "The average person says about 16,000 words per day. That's a short novel every week.",
-      "Sharks have been around longer than trees. They're the OGs of Earth.",
-      "A snail can sleep for three years straight. Living the dream, honestly.",
-      "The fear of cooking is called 'mageirocophobia'. Finally, an excuse!",
-      "More monopoly money is printed each year than real money worldwide.",
-      "In the time it takes you to read this sentence, about 50,000 cells in your body died and were replaced.",
-      "Coca-Cola would be green if food colouring wasn't added to it.",
-      "Cats have over 20 vocalisations, including the 'silent meow' that only their owners can hear.",
-      "In Kentucky, it's illegal to marry the same person four times. Third time's the limit.",
-      "Pteronophobia is the fear of being tickled by feathers. Understandable.",
-      "A group of pandas is called an 'embarrassment'. That's harsh but fair.",
-      "The shortest complete sentence in the English language is 'Go.'",
-      "Dolphins can stay awake for 15 days straight by sleeping with half their brain.",
-      "The average cloud weighs about 1.1 million pounds. So next time someone says 'light as a cloud'...",
-      "In 2019, NASA astronauts baked chocolate chip cookies in space. They took 2 hours instead of 20 minutes.",
-      "If you farted consistently for 6 years and 9 months, you'd produce enough gas to create the energy of an atomic bomb.",
-      "A group of crows is called a 'murder'. A group of ravens is called an 'unkindness'. Birds are dramatic.",
-      "In 2008, Norway knighted a penguin. His name is Sir Nils Olav III.",
-      "Octopuses have three hearts and blue blood. They're basically aliens living in our oceans.",
-      "The shortest complete war lasted 38 to 45 minutes. Britain vs Zanzibar, 1896.",
-      "A cockroach can survive for a week without its head. It dies of dehydration, not headlessness.",
-      "In 2015, a man legally changed his name to 'Nothing' and got a passport with it.",
-      "There's a town in Turkey called 'Batman'. The mayor once sued Warner Bros over the name.",
-      "A group of ferrets is called a 'business'. The most professional animal group name.",
-      "The CEO of LEGO is technically a Minifigure. Not really, but it'd be cool.",
-      "There are more fake flamingos in the world than real ones. Plastic won.",
-      "Cheetahs can't roar — they meow and purr like housecats. Less intimidating.",
-      "In Texas, it's legal to shoot Bigfoot. In Washington state, it's illegal. State rights, baby.",
-      "Cleopatra lived closer in time to the first Pizza Hut than to the construction of the Great Pyramid.",
-      "A group of squid is called a 'squad'. Nature has great naming conventions.",
-      "In Switzerland, it's against the law to keep just one guinea pig. They need a buddy!",
-      "A flock of crows is called a murder. A flock of seagulls ran so far away.",
-      "The sentence 'Pack my box with five dozen liquor jugs' uses every letter in the alphabet.",
-      "Dragonflies have been on Earth for 300 million years. They saw the dinosaurs come AND go.",
-      "A group of unicorns is called a 'blessing'. We love that.",
-      "And finally: you've now scrolled through 1,000 funny facts. That's commitment. High five, Hugo!",
-      "A group of frogs is called an 'army'. They're tiny but mighty.",
-      "Bees can detect bombs better than some machines. Buzz-worthy talent.",
-      "Cats can rotate their ears 180 degrees. Built-in satellite dishes.",
-      "Dogs dream just like humans do. Probably about chasing squirrels.",
-      "A blue whale's tongue weighs as much as an elephant. That's one heavy lick.",
-      "Reindeer eyes change colour from gold in summer to blue in winter.",
-      "A goldfish has a memory span of at least 3 months — not 3 seconds like people say.",
-      "Turtles can breathe through their bums. Nature's snorkel.",
-      "Cows can walk upstairs but not downstairs. Their knees don't bend that way.",
-      "Sloths only poop once a week. They climb down from their tree to do it.",
-      "A platypus has no stomach. Food goes straight from the throat to the intestines.",
-      "Owls can't move their eyeballs. That's why they turn their whole heads instead.",
-      "Flamingos are born white and turn pink from eating shrimp. You are what you eat!",
-      "A kangaroo can't hop backwards. Always moving forward in life.",
-      "Squirrels plant thousands of trees each year by forgetting where they buried their nuts.",
-      "Dolphins give each other names and will come when called. Social butterflies of the sea.",
-      "A snapping turtle can bite with a force of 1,000 pounds. Don't pat them.",
-      "Cats spend about 15% of their day grooming. The rest is spent judging you.",
-      "An ostrich's eye is bigger than its brain. Looks before thinking.",
-      "Penguins can jump up to 6 feet in the air. Tiny Olympic athletes.",
-      "A housefly hums in the key of F. The tiniest musician.",
-      "Bats always turn left when exiting a cave. They have a preferred direction.",
-      "Elephants can hear through their feet. They detect vibrations in the ground.",
-      "A group of rabbits is called a 'fluffle'. Cutest word in the English language.",
-      "Giraffes clean their ears with their tongues. That tongue is 18 inches long.",
-      "Lobsters have blue blood. They're underwater royalty.",
-      "A chameleon can move its eyes independently — one looks left while the other looks right.",
-      "Polar bears are nearly invisible under infrared cameras. Only their breath and nose show up.",
-      "Sea cucumbers fight by shooting their internal organs at enemies. Hardcore.",
-      "A rhinoceros' horn is made of the same stuff as your fingernails — keratin.",
-      "Spiders can't fly, but some 'balloon' on silk threads and travel thousands of miles.",
-      "Cats have 32 muscles in each ear. Humans have only 6.",
-      "A garden snail has about 14,000 teeth, all on its tongue.",
-      "Hippos secrete a natural sunscreen that's red. It looks like they're sweating blood.",
-      "Horses can sleep standing up. Power napping champions.",
-      "An ant can carry 50 times its own body weight. Imagine you lifting a car.",
-      "The lyrebird can mimic almost any sound, including chainsaws and camera shutters.",
-      "A baby octopus is about the size of a flea when it's born.",
-      "Raccoons can remember solutions to problems for up to three years.",
-      "A chicken lived for 18 months without its head. His name was Mike. Google it.",
-      "Koala fingerprints are so similar to human ones they've confused crime scene investigators.",
-      "Geese fly in a V formation because it saves energy. The leader rotates so no one gets too tired.",
-      "A group of porcupines is called a 'prickle'. Obviously.",
-      "Manatees control their buoyancy by farting. Science is beautiful.",
-      "The pistol shrimp is so loud it can stun fish with sound alone.",
-      "Baby goats learn their names within a week of being born.",
-      "A group of parrots is called a 'pandemonium'. Accurate.",
-      "Dolphins sometimes use puffer fish as a toy, passing them between each other.",
-      "A hummingbird weighs less than a penny.",
-      "The red-lipped batfish looks permanently like it's wearing bright red lipstick.",
-      "In England, it's illegal to die in the Houses of Parliament. Good luck enforcing that.",
-      "The average person eats about 8 spiders in their sleep over a lifetime — this is actually a myth started to show how easily misinformation spreads!",
-      "IKEA uses about 1% of the world's commercial wood supply every year.",
-      "A 'moment' used to be an exact medieval measure of time — 90 seconds.",
-      "In Ohio, it's illegal to get a fish drunk. Someone must have tried.",
-      "In ancient Egypt, servants were smeared with honey to attract flies away from the pharaoh.",
-      "The average person produces enough spit in their lifetime to fill 2 swimming pools.",
-      "A dentist invented the electric chair. From fixing teeth to... something else.",
-      "The total weight of all ants on Earth roughly equals the total weight of all humans.",
-      "If you put your finger in your ear and scratch, it sounds like Pac-Man.",
-      "A 'butt' is a real unit of measurement — equal to about 126 gallons of wine.",
-      "The longest hiccuping spree lasted 68 years. From 1922 to 1990. Imagine!",
-      "7% of American adults believe that chocolate milk comes from brown cows.",
-      "Barbie's full name is Barbara Millicent Roberts.",
-      "The average person will eat about 25,000 meals in their lifetime.",
-      "Mr. Potato Head was the first toy advertised on television, in 1952.",
-      "In Japan, letting a sumo wrestler make your baby cry is considered good luck.",
-      "The average person's left hand does 56% of the typing on a QWERTY keyboard.",
-      "A cockroach can hold its breath for 40 minutes. Champion diver.",
-      "More people die from taking selfies each year than from shark attacks.",
-      "The longest English word without a vowel is 'rhythms'.",
-      "It's physically impossible to tickle yourself. Your brain knows it's coming.",
-      "The most popular item at Walmart is bananas. Not what you'd expect.",
-      "In 1994, the entire nation of Liechtenstein was accidentally invaded by Switzerland. No one was hurt.",
-      "You burn more calories sleeping than watching TV. Netflix isn't exercise though.",
-      "A group of caterpillars is called an 'army'. Another army in the animal kingdom.",
-      "In 1986, Apple launched a clothing line. It flopped spectacularly.",
-      "The average person spends about 6 months of their life on the toilet.",
-      "There are more possible iterations of a game of chess than atoms in the known universe.",
-      "Children grow faster in springtime. Spring literally makes you taller.",
-      "The smallest bone in your body is in your ear — the stapes. It's about the size of a grain of rice.",
-      "If you ate just one piece of LEGO, it would take about 1.7 days to pass through your system. Scientists tested this.",
-      "A snail can crawl across a razor blade without getting hurt, thanks to its mucus.",
-      "The world record for most T-shirts worn at once is 260. That's commitment.",
-      "In 2016, a dog was elected mayor of a town in Minnesota. His name was Duke.",
-      "The original name for the butterfly was 'flutterby'. That's way more accurate.",
-      "A 'tittynope' is an old English word for a small amount of something left over.",
-      "In the Philippines, it's illegal to watch a movie on a Friday the 13th. Not really, but it should be.",
-      "A 'nap' used to mean the surface of fabric, not a short sleep.",
-      "The longest word in English without repeating a letter is 'subdermatoglyphic'.",
-      "There's a planet made of diamonds that's twice the size of Earth.",
-      "In Georgia (US), it's illegal to tie a giraffe to a telephone pole. Someone tried.",
-      "An average yawn lasts about 6 seconds. And now you're probably yawning.",
-      "The world record for holding your breath underwater is over 24 minutes.",
-      "A 'sternutation' is the medical term for a sneeze. Bless you.",
-      "Almonds are members of the rose family.",
-      "A group of chickens is called a 'peep'. Adorable.",
-      "The longest wedding veil was the same length as 63 football pitches.",
-      "In Vermont, women must get written permission from their husbands to wear false teeth. Old law, obviously.",
-      "In 2017, 'covfefe' was the most Googled word. Nobody knows what it means.",
-      "Clouds look white because they scatter all colours of light equally.",
-      "Your fingernails grow faster on your dominant hand.",
-      "A bolt of lightning is only about an inch wide.",
-      "Peanuts are one of the ingredients in dynamite (well, peanut oil is).",
-      "A group of ladybirds is called a 'loveliness'. Perfectly named.",
-      "A sneeze can travel at 100 mph. Biological rocket launcher.",
-      "Rubber bands last longer when refrigerated.",
-      "A hippo can open its mouth wide enough to fit a 4-foot-tall child inside. Please don't test this.",
-      "Broccoli is actually a human-made plant. It was bred from wild cabbage by the Romans.",
-      "There are about 1.4 billion insects for every human on Earth.",
-      "Cashews come from a fruit called a cashew apple. The nut hangs from the bottom.",
-      "The human body gives off enough heat in 30 minutes to bring a gallon of water to a boil.",
-      "A photon takes 8 minutes to reach Earth from the Sun, but 100,000 years to travel from the Sun's core to its surface.",
-      "Dead skin cells are a main ingredient in household dust. You're breathing yourself.",
-      "A single tree can absorb about 22 kg of carbon dioxide per year.",
-      "If you unravelled all of your DNA, it would stretch 10 billion miles — from Earth past Pluto.",
-      "Humans share 50% of their DNA with bananas and 70% with slugs. Family reunion!",
-      "The average person has 67 different species of bacteria living in their belly button.",
-      "Your cornea is the only part of your body with no blood supply — it gets oxygen directly from air.",
-      "A single lightning bolt can heat the air around it to 30,000 degrees Celsius.",
-      "Stomach acid is strong enough to dissolve stainless steel. Don't swallow cutlery.",
-      "A golf ball has 336 dimples on it. Someone counted.",
-      "The Moon has moonquakes, just like Earth has earthquakes.",
-      "A baseball's stitching contains exactly 108 stitches.",
-      "About 70% of Earth's surface is covered in water, but only 1% is drinkable.",
-      "Chalk is made from trillions of microscopic sea creature skeletons.",
-      "The tongue of a blue whale is so large that 50 people could stand on it.",
-      "Static electricity can reach up to 3,000 volts. No wonder it hurts!",
-      "Your stomach acid is so strong that your stomach lining replaces itself every 3 days.",
-      "A hurricane releases as much energy as 10 atomic bombs per second.",
-      "Sand from the Sahara Desert fertilises the Amazon Rainforest. The wind carries it across the ocean.",
-      "Every second, 4 babies are born and 2 people die worldwide.",
-      "Human thigh bones are stronger than concrete.",
-      "The longest recorded flight of a chicken is 13 seconds. Brave chicken.",
-      "Honey is the only food that never goes off. 3,000-year-old honey is still edible.",
-      "It rains diamonds on Jupiter and Saturn. Moving there immediately.",
-      "Humans can detect over 1 trillion different smells. Dogs can still detect way more.",
-      "A hardboiled egg will spin, but a soft-boiled one won't. The liquid inside wobbles.",
-      "Your brain can read jumbled words as long as the first and last letters are in the right place.",
-      "Astronauts get taller in space because there's no gravity compressing their spine.",
-      "Cats can jump up to 6 times their length. Imagine jumping over 3 cars.",
-      "A single bolt of lightning has enough energy to power a house for a month.",
-      "The average human body has enough sulfur to kill all fleas on a dog.",
-      "There are 60,000 miles of blood vessels in the human body. Enough to wrap around Earth 2.5 times.",
-      "The surface of Mars is covered in iron oxide — that's rust. The whole planet is rusty.",
-      "Approximately 1% of the static on old TVs was radiation left over from the Big Bang.",
-      "A pig's orgasm can last 30 minutes. Pigs live their best lives.",
-      "Sound can't travel through a vacuum. That's why space is silent.",
-      "The average person walks the equivalent of 3 times around the world in a lifetime.",
-      "More germs are transferred from shaking hands than from kissing.",
-      "In Alabama, it's illegal to wear a fake moustache that causes laughter in church.",
-      "The longest Monopoly game ever lasted 70 days straight. Nobody won at friendship.",
-      "Bookkeeper is the only English word with three consecutive double letters.",
-      "The first oranges weren't orange — they were green. The colour was named after the fruit.",
-      "A 'panagram' uses every letter of the alphabet: 'The quick brown fox jumps over the lazy dog.'",
-      "Polar bears can eat as many as 86 penguins in a single sitting — if they lived in the same place (they don't).",
-      "You can't sneeze in your sleep because your brain shuts down the reflex.",
-      "In Sweden, there's a hotel made entirely of ice. It melts every spring and is rebuilt every winter.",
-      "A 'jiffy' is 1/100th of a second. So when someone says they'll be back in a jiffy...",
-      "If you type 'askew' into Google, the results page tilts slightly. Try it!",
-      "In 1999, the founders of Google tried to sell it for $1 million. The buyer said no.",
-      "The YKK on your zipper stands for 'Yoshida Kogyo Kabushikikaisha'. Now you'll always notice it.",
-      "Pringles aren't technically potato chips. They're 'potato crisps' made from dehydrated potato flakes.",
-      "A group of lemurs is called a 'conspiracy'. They're definitely up to something.",
-      "In 2005, a man traded a red paperclip all the way up to a house. Through 14 trades.",
-      "The T-Rex lived closer in time to us than to the Stegosaurus.",
-      "The word 'strengths' is the longest word with only one vowel.",
-      "In French, 'dandelion' translates to 'pissenlit', which means 'wet the bed'. They're a diuretic.",
-      "New York was briefly named 'New Orange' by the Dutch. It didn't stick.",
-      "The shortest complete sentence in English is 'I am.' Or possibly just 'Go.'",
-      "In space, astronauts can't tell if their bladders are full because there's no gravity pull.",
-      "An average cumulus cloud weighs about 1.1 million pounds.",
-      "The oldest known pet cat lived 9,500 years ago in Cyprus.",
-      "If the Earth were the size of a basketball, the Moon would be the size of a tennis ball.",
-      "Bubble Wrap was originally invented as 3D wallpaper. It failed.",
-      "A 'quire' is 24 sheets of paper. A 'ream' is 500.",
-      "The shortest war in history was between Britain and Zanzibar. Zanzibar surrendered in 38 minutes.",
-      "A flock of ravens is called an 'unkindness'. Birds are dramatic creatures.",
-      "Most toilets flush in E flat. Check next time.",
-      "In 2007, a man set a world record by wearing 155 pairs of underpants at once.",
-      "The average person will produce about 10,000 gallons of saliva in their lifetime.",
-      "Trypophobia is the fear of clusters of small holes. Google it at your own risk.",
-      "The electric chair was invented by a dentist. That explains a lot.",
-      "There's a word for the fear of peanut butter sticking to the roof of your mouth: arachibutyrophobia.",
-      "In the UK, it's technically illegal to handle a salmon in suspicious circumstances.",
-      "A 'duel' used to mean a prayer, not a fight. Times changed.",
-      "Your pinky finger contributes over 50% of your hand's strength.",
-      "Barbie and Ken broke up in 2004. They got back together in 2011.",
-      "In Australia, wombats produce cube-shaped poo. It helps stop the poo from rolling away.",
-      "The tallest person in recorded history was 8 feet 11 inches tall. Robert Wadlow.",
-      "The inventor of the treadmill created it as a punishment device for prisoners.",
-      "A 'shrimp' is also the name for a young child in Australian slang.",
-      "In 2009, Stephen Hawking held a party for time travellers. No one showed up.",
-      "The average cloud weighs about the same as 100 elephants.",
-      "There are more stars in space than grains of sand on every beach on Earth.",
-      "A cat's purr vibrates at a frequency that can help heal bones. Cat therapy!",
-      "The inventor of the microwave was paid $2 for his discovery. He gave it to his employer.",
-      "Slugs have 4 noses. One pair detects smells, the other detects chemical signals.",
-      "The word 'muscle' comes from the Latin for 'little mouse' — because flexed muscles look like mice.",
-      "You are more likely to die from a falling coconut than from a shark attack.",
-      "The national animal of Scotland is the unicorn. Truly magical.",
-      "A group of pigs is called a 'drift' or 'drove'.",
-      "Astronauts' helmets have a velcro patch inside so they can scratch their noses.",
-      "The average cloud moves at about 30 miles per hour.",
-      "In 2014, a dog was elected mayor of a town in California. His name was Max.",
-      "Dragonflies can fly in all six directions: up, down, forward, backward, left, and right.",
-      "The longest recorded sneezing fit lasted 976 days. That's almost 3 years of sneezing.",
-      "There are more possible chess games than atoms in the observable universe.",
-      "A group of bats is called a 'colony' or a 'camp'. Or sometimes 'a cloud'.",
-      "The first thing ever sold on eBay was a broken laser pointer for $14.83.",
-      "Your hair grows faster in warm weather. Summer is basically hair season.",
-      "A 'petrichor' is the pleasant smell of rain on dry ground.",
-      "In 2016, scientists discovered that bananas can detect radiation.",
-      "The first ever YouTube video was uploaded on April 23, 2005, titled 'Me at the zoo'.",
-      "A group of butterflies is called a 'kaleidoscope'. Beautiful name for beautiful creatures.",
-      "There are about 10 quintillion insects alive at any given moment.",
-      "In 1783, the first passengers in a hot air balloon were a sheep, a duck, and a rooster.",
-      "The shortest complete English word that contains A, B, C, D, E, and F is 'feedback'.",
-      "A 'moment' in medieval time was exactly 90 seconds.",
-      "The average person has about 100,000 hairs on their head.",
-      "The infinity symbol is called a lemniscate.",
-      "In one day, your blood travels about 12,000 miles through your body.",
-      "A chameleon's tongue can be twice the length of its body.",
-      "There are more ways to shuffle a deck of cards than there are atoms on Earth.",
-      "The dot on top of the letter 'j' is also called a tittle, just like the one on 'i'.",
-      "A bolt of lightning is about 54,000 degrees Fahrenheit — five times hotter than the Sun's surface.",
-      "The average person will eat about 35,000 cookies in their lifetime.",
-      "A baby kangaroo is called a joey and is only about 1 inch long when born.",
-      "In 2002, the Mars rover sang 'Happy Birthday' to itself. Alone. On Mars. That's both cool and sad.",
-      "If you could fold a piece of paper 103 times, its thickness would exceed the size of the observable universe.",
-      "The average pencil can be sharpened 17 times.",
-      "A 'googolplex' is so large that you couldn't write it out even if you wrote a zero on every particle in the universe.",
-      "Honey is the only food made by insects that humans eat.",
-      "A mosquito has 47 teeth. Tiny but terrifying.",
-      "The average person blinks about 15-20 times per minute — that's 28,800 times a day!",
-      "In Morse code, the word 'SMS' is ··· −− ···. Now you know!",
-      "A group of flamingos is called a 'flamboyance'. Worth saying twice because it's that good.",
-      "The longest word you can type with your right hand on a keyboard is 'lollipop'.",
-      "A group of zebras is called a 'dazzle'. Fitting.",
-      "The loudest animal on Earth is the sperm whale — its clicks reach 230 decibels.",
-      "The youngest pope in history was 18 years old.",
-      "A group of stingrays is called a 'fever'. Sounds about right.",
-      "Your brain is more active at night than during the day. Night owl confirmed.",
-      "A group of hippos is called a 'bloat'. Perfect description.",
-      "The world's largest snowflake was 15 inches wide. Caught in Montana in 1887.",
-      "Crows can recognise human faces and hold grudges. Don't annoy a crow.",
-      "The sentence 'Mr Jock, TV quiz PhD, bags few lynx' uses every letter of the alphabet once.",
-      "A group of oysters is called a 'bed'. They're always sleeping.",
-      "There are more public libraries in the US than McDonald's restaurants.",
-      "And that's fact number 1,000! Hugo, you've read them all. Legend status achieved!",
-      "A group of kangaroos is called a 'mob'. Australian gangs, basically.",
-      "The average person swallows about 1 litre of snot every day. Appetising.",
-      "Elephants can smell water from 12 miles away. Better than any GPS.",
-      "Scotland has over 400 words for snow. And they need every one.",
-      "The average human walks about 100,000 miles in a lifetime — 4 times around the Earth.",
-      "A tarantula can survive for over 2 years without eating. Budget-friendly pet.",
-      "In zero gravity, a candle flame is round instead of pointy.",
-      "Your brain weighs about 1.4 kg but uses 20% of your energy. Very demanding organ.",
-      "The longest game of Monopoly in a bathtub lasted 99 hours. Why? Nobody knows.",
-      "The first computer weighed 27 tonnes and filled an entire room.",
-      "If you keep going north, eventually you'll go south. But east just keeps going east.",
-      "There are more possible iterations of a chess game than atoms in the universe.",
-      "Lobsters were once considered food for the poor and were fed to prisoners.",
-      "The first TV commercial aired in 1941. It was for Bulova watches and cost $9.",
-      "A single strand of spider silk is thinner than a human hair but stronger than steel.",
-      "The world's oldest chewing gum is 9,000 years old.",
-      "A flea can accelerate faster than a space shuttle.",
-      "The world record for most claps in a minute is 1,020.",
-      "In Japan, cats are considered good luck. Cat cafes are everywhere.",
-      "A newborn baby has about one cup of blood in its body.",
-      "The longest anyone has gone without sleep is 11 days. Don't try it.",
-      "A deck of cards has the same number of cards as there are weeks in a year — 52.",
-      "The word 'testify' comes from Roman times when men swore on their... never mind.",
-      "A group of goldfish is called a 'troubling'. They know what they did.",
-      "In Japan, it's considered good luck if a sumo wrestler makes your baby cry.",
-      "The average person speaks about 16,000 words a day. Introverts: significantly less.",
-      "A 'fluffernutter' is a real sandwich made with peanut butter and marshmallow fluff.",
-      "There's a basketball court on the top floor of the US Supreme Court building.",
-      "Mosquitoes are attracted to people who have recently eaten bananas.",
-      "A group of crows remembering you is basically a neighbourhood watch programme.",
-      "Venus is the only planet that rotates clockwise. The rebel of the solar system.",
-      "A baby panda is smaller than a mouse when it's born.",
-      "The inventor of the matchstick was called John Walker. Not the whisky one.",
-      "A 'zeptosecond' is the smallest unit of time ever measured — a trillionth of a billionth of a second.",
-      "Sharks can detect a single drop of blood in an Olympic swimming pool.",
-      "The word 'lethologica' describes the state of forgetting the word you want to say.",
-      "A giraffe's neck is too short to reach the ground. They have to splay their legs to drink.",
-      "There are more fake flamingos in the US than real flamingos in the world.",
-      "A dime has 118 ridges around its edge.",
-      "In 1811, nearly a quarter of all women in Britain were named Mary.",
-      "A group of iguanas is called a 'mess'. Fair enough.",
-      "Your pinky finger contributes over 50% of your hand strength.",
-      "The shortest English word with all five vowels is 'sequoia'.",
-      "A 'contronym' is a word that means the opposite of itself, like 'cleave' (split apart or cling together).",
-      "The oldest known complaint letter is 3,800 years old, from Babylonia. About bad copper delivery.",
-      "An apple, potato, and onion all taste the same if you hold your nose while eating them.",
-      "The longest traffic jam in history was 62 miles long and lasted 12 days in Beijing.",
-      "Crows have been observed making and using tools. They're basically engineering students.",
-      "A group of vultures is called a 'venue'. Least appealing venue ever.",
-      "Your body has enough phosphorus to make 2,200 match heads.",
-      "The longest word typed only with the left hand is 'stewardesses'.",
-      "In 2012, a man successfully faked his way into the Super Bowl by pretending to be a player.",
-      "A group of turkeys is called a 'rafter'. Home improvement birds.",
-      "The dot between the dot com was originally called 'full stop' in British English.",
-      "Cats can make about 100 different vocal sounds. Dogs can make about 10.",
-      "In 1998, Sony accidentally sold 700,000 camcorders that could see through clothes in infrared mode.",
-      "A group of ferrets is called a 'business'. The most professional animals.",
-      "The average four-year-old asks 437 questions a day. Teachers and parents deserve hazard pay.",
-      "In 2014, a missing woman joined the search party looking for herself without realising it.",
-      "The longest English word with letters in alphabetical order is 'almost'.",
-      "A group of cobras is called a 'quiver'. Appropriately terrifying.",
-      "Your brain generates about 12-25 watts of electricity. Enough to power a low-watt LED bulb.",
-      "The smell of rain has a name: petrichor. It's caused by oils released by soil.",
-      "In 2009, a cat in Italy inherited 10 million euros. Richest cat ever.",
-      "The longest palindrome in the Oxford English Dictionary is 'tattarrattat' — a knock on the door.",
-      "A group of seals is called a 'pod' on land and a 'raft' in water.",
-      "Astronauts grow taller in space because their spines expand without gravity.",
-      "There are more possible unique games of chess than there are electrons in the observable universe.",
-      "A group of jellyfish stranded on a beach is called a 'smuck'. Or more commonly, 'a hazard'.",
-      "The largest living organism is a honey fungus in Oregon spanning 2,385 acres.",
-      "You use 200 muscles to take one step. Walking is a full-body workout.",
-      "A group of clams is called a 'bed'. They're very lazy shellfish.",
-      "The world's oldest known joke is a fart joke from ancient Sumer, circa 1900 BC.",
-      "A single human hair can hold about 100 grams. Don't test it with your whole head.",
-      "Astronauts have to exercise for about 2 hours every day in space to prevent muscle loss.",
-      "A group of storks is called a 'mustering'.",
-      "The shortest verse in the Bible is 'Jesus wept.' (John 11:35)",
-      "A group of toads is called a 'knot'. Ribbiting stuff.",
-      "The original London Bridge was sold and moved to Arizona in 1968.",
-      "There are 336 dimples on a regulation golf ball. Someone with patience counted.",
-      "A group of hawks is called a 'cast'. Very theatrical.",
-      "The first 3D film was shown in 1922. It was called 'The Power of Love'.",
-      "A group of cockroaches is called an 'intrusion'. The most accurate group name ever.",
-      "The longest hiccuping spree lasted 68 years. Charles Osborne hiccupped from 1922 to 1990.",
-      "There are 6 official languages of the United Nations: English, French, Spanish, Russian, Chinese, and Arabic.",
-      "A group of woodpeckers is called a 'descent'.",
-      "Your big toe carries about 40% of your body weight when walking.",
-      "The unicorn is Scotland's national animal because it symbolises dominance and purity in Celtic mythology.",
-      "A group of locusts is called a 'plague'. Very dramatic but fair.",
-      "The average person will grow 590 miles of hair in their lifetime.",
-      "A baby blue whale gains about 90 kg every day during its first year.",
-      "A group of fish is a 'school', but a group of sharks is a 'shiver'. Appropriate!",
-      "The world's largest jigsaw puzzle has 551,232 pieces.",
-      "A group of eagles is called a 'convocation'. Very formal birds.",
-      "You are born with 270 bones but end up with 206 as some fuse together during growth.",
-      "A group of whales is called a 'pod'. The original podcast.",
-      "The average person has about 1,460 dreams per year. Most are forgotten by breakfast.",
-      "A group of alligators is called a 'congregation'. Sunday best not required.",
-      "The first Apple logo featured Isaac Newton sitting under an apple tree.",
-      "And there you have it — 1,000 funny facts! If you made it this far, you deserve a medal, Hugo!",
-      "A group of eels is called a 'swarm'. Nightmare fuel.",
-      "Astronauts report that space smells like seared steak and gunpowder.",
-      "A group of donkeys is called a 'pace'. Taking life slow.",
-      "The world's deepest postbox is in Susami Bay, Japan — 10 metres underwater.",
-      "Cows can walk upstairs but can't walk back down. Architecture is their weakness.",
-      "A group of geese on the ground is called a 'gaggle'. In the air, they're a 'skein'.",
-      "The oldest piece of chewing gum ever found is 9,000 years old.",
-      "A group of bears is called a 'sleuth'. Bear detectives!",
-      "Your brain can process images in as little as 13 milliseconds.",
-      "A group of moles is called a 'labour'. They work hard underground.",
-      "The shortest distance between two countries is 3.7 km — between Spain and Morocco.",
-      "A group of peacocks is called an 'ostentation'. Very fitting.",
-      "In Japan, there are more pets than children under 15.",
-      "A group of larks is called an 'exaltation'. Poetic.",
-      "The Eiffel Tower grows about 6 inches taller in summer due to heat expansion.",
-      "A group of crows investigating a dead crow is called a 'crow funeral'. They really do this.",
-      "The average person will eat about 200 spiders in their lifetime — just kidding, that's a myth!",
-      "A group of nightingales is called a 'watch'. They keep an eye on things.",
-      "The first toy to be advertised on TV was Mr. Potato Head in 1952.",
-      "A group of skunks is called a 'surfeit'. One is already a surfeit if you ask me.",
-      "If you folded a piece of paper 42 times, it would reach the Moon.",
-      "A group of dolphins is called a 'pod'. The friendliest pod you'll ever meet.",
-      "The world's largest snowflake was 15 inches wide, found in Montana in 1887.",
-      "A group of snakes is called a 'nest' or a 'pit'. Both equally terrifying.",
-      "Your body produces about 1 litre of mucus every day. You swallow most of it. Sorry.",
-      "A group of gorillas is called a 'band'. Rock on, primates.",
-      "In Finland, there's a mobile phone throwing championship.",
-      "A group of foxes is called a 'skulk'. Sneaky little foxes.",
-      "The world's oldest hotel has been operating since 705 AD in Japan.",
-      "A group of turtles is called a 'bale'. Slow-motion group name.",
-      "In South Korea, there's an entire theme park dedicated to toilets.",
-      "A group of crocodiles is called a 'bask'. Sunbathing death machines.",
-      "The letter J is the only letter that doesn't appear on the periodic table.",
-      "A group of monkeys is called a 'troop'. Organised chaos.",
-      "There's a town in India called 'Ding Dong'.",
-      "A group of mosquitoes is called a 'scourge'. Perfectly described.",
-      "The average pencil has enough graphite to draw a line 35 miles long.",
-      "A group of sardines is called a 'family'. The fishiest family reunion.",
-      "In Switzerland, you can rent a guinea pig so your single one isn't lonely.",
-      "A group of penguins in the water is called a 'raft'. On land, a 'waddle'. Adorable.",
-      "The longest place name in the world is 85 characters long and is in New Zealand.",
-      "A group of ducks on water is a 'raft'. On land, they're a 'brace'.",
-      "There are more plastic flamingos in the USA than real flamingos in the whole world.",
-      "A group of squirrels is called a 'scurry'. You can picture it.",
-      "In Switzerland, it's illegal to flush the toilet after 10 pm in an apartment. Noise laws!",
-      "A group of sparrows is called a 'host'. They'll welcome you warmly.",
-      "The original Star Fox game was inspired by the Fushimi Inari shrine in Kyoto.",
-      "A group of mice is called a 'mischief'. They definitely live up to it.",
-      "The world record for consecutive pogo stick jumps is 206,864.",
-      "A group of deer is called a 'herd' — but you knew that. Here's one more: baby deer can stand within 20 minutes of being born!",
-      "In Japan, there's a festival dedicated to crying babies. Sumo wrestlers try to make them cry!",
-      "A group of seagulls is called a 'colony'. Or, in Brighton, 'a chip-stealing menace'.",
-      "The shortest war in history was less than an hour. Britain vs Zanzibar, 1896.",
-      "A group of meerkats is called a 'mob'. They look like tiny gangsters anyway.",
-      "There are about 10 times more bacteria in your body than human cells.",
-      "A group of badgers is called a 'cete'. Not a 'set' as Roald Dahl wrote — or maybe it is both!",
-      "The average person takes about 7,000 steps a day.",
-      "A group of walruses is called a 'herd' or a 'pod'.",
-      "Your body has enough carbon to make 900 pencils, enough iron to make a 3-inch nail, and enough fat to make 7 bars of soap.",
-      "A group of starlings performing aerial displays is called a 'murmuration'. And it looks magical.",
-      "The world's largest ball of twine weighs over 9 tonnes.",
-      "A group of butterflies migrating is called a 'rabble'.",
-      "If every person on Earth stood shoulder to shoulder, they could all fit within Los Angeles.",
-      "A group of swans is called a 'bevy'. Very elegant.",
-      "The average cloud is about 1 km long and weighs about 500 tonnes.",
-      "A group of pigeons is called a 'kit' or a 'flock'. Or in city centres, 'a nuisance'.",
-      "Octopi, octopuses, and octopodes are all acceptable plurals. English is weird.",
-      "A group of ants is called a 'colony'. The most organised colony on Earth.",
-      "The human nose can detect about a trillion different scents.",
-      "A group of catfish is called a 'school'. An actual school of catfish.",
-      "You burn about 50 calories per hour while sleeping. Sleep = exercise. Sort of.",
-      "A group of wolves is called a 'pack'. They invented teamwork.",
-      "The longest game of chess theoretically possible would involve 5,949 moves.",
-      "A group of bison is called an 'obstinacy'. They won't move out of your way.",
-      "A jiffy is used in electronics to mean 1/60th or 1/50th of a second.",
-      "A group of herons is called a 'siege'. Medieval birds.",
-      "The average adult has about 5 litres of blood. That's roughly 10 pints.",
-      "A group of hyenas is called a 'cackle'. Listen to them and you'll understand.",
-      "The longest word you can type with just your right hand is 'lollipop'.",
-      "A group of rattlesnakes is called a 'rhumba'. The danciest danger noodles.",
-      "There are 31,536,000 seconds in a year. You just used one reading this.",
-      "A group of elk is called a 'gang'. Don't mess with them.",
-      "The longest English word with no repeated letters is 'uncopyrightable' at 15 letters.",
-      "A group of rhinos is called a 'crash'. Best group name in the animal kingdom.",
-      "The dot above a lowercase i or j is called a 'tittle' — and now you can't unsee it.",
-      "A group of cheetahs is called a 'coalition'. Political animals.",
-      "If you could drive straight up at 60 mph, you'd reach space in about an hour.",
-      "A group of flamingos is called a 'flamboyance'. This is the third time we've mentioned it because it's THAT good.",
-      "The human heart beats about 100,000 times per day. Give it some appreciation.",
-      "A group of otters is called a 'romp'. Because that's exactly what they do.",
-      "If you laid every LEGO brick ever made end to end, they'd wrap around the world 18 times.",
-      "A group of fish is called a 'school'. Finally — fish that go to class.",
-      "The shortest complete English sentence that uses every letter of the alphabet is 26 letters long if you count: 'Pack my box with five dozen liquor jugs.'",
-      "A group of owls is called a 'parliament'. The wisest government ever.",
-      "The word 'almost' is the longest commonly used word with all letters in alphabetical order.",
-      "A group of unicorns is called a 'blessing'. Even imaginary animals have group names.",
-      "The average person produces enough saliva in their lifetime to fill a small swimming pool.",
-      "A group of dragons (if they existed) would be called a 'thunder'. We wish they existed.",
-      "And with that — you've reached 1,000 funny facts for real this time. Hugo, you're officially a fact master!",
-      "Just kidding, THIS is the very last one. Or is it? Mwahahaha!"
-    ];
-
-    let funnyFactsShown = 0;
-    let currentAdminTab = 'facts'; // Which tab is active in admin
-
-    // Show a random funny fact — same logic as showRandomFact!
-    function showRandomFunnyFact() {
-      const randomIndex = Math.floor(Math.random() * funnyFacts.length);
-      const text = document.getElementById('funnyFactText');
-      const box = document.getElementById('funnyFactBox');
-
-      // Stop any current speech
-      window.speechSynthesis.cancel();
-
-      box.style.opacity = '0';
-      box.style.transform = 'scale(0.95)';
-
-      setTimeout(() => {
-        text.textContent = funnyFacts[randomIndex];
-        box.style.opacity = '1';
-        box.style.transform = 'scale(1)';
-        // Show the "Read Aloud" button
-        document.getElementById('funnySpeakBtn').classList.add('visible');
-        document.getElementById('funnySpeakBtn').classList.remove('speaking');
-        document.getElementById('funnySpeakBtn').innerHTML = '&#128264; Read Aloud';
-      }, 300);
-
-      funnyFactsShown++;
-      document.getElementById('funnyCounter').textContent =
-        `Funny facts generated: ${funnyFactsShown}`;
-    }
-
-    // Switch between admin tabs
-    function switchAdminTab(tab) {
-      currentAdminTab = tab;
-      document.getElementById('tabFacts').classList.toggle('active', tab === 'facts');
-      document.getElementById('tabFunny').classList.toggle('active', tab === 'funny');
-      document.getElementById('searchBar').value = '';
-      renderFactList();
-    }
-
-    let factsShown = 0;           // How many times the button has been pressed
-    let editingIndex = -1;        // Which fact we're editing (-1 means none)
-    let currentAnnouncement = ""; // The current announcement text
-
-    // ============================================
-    // MAIN FUNCTIONS
-    // ============================================
-    //
-    // Hugo - a "function" is a set of instructions with a name.
-    // When you "call" a function (use its name), it runs those instructions.
-    // It's like a recipe — you write it once, then use it whenever you want.
-
-    // This function picks a random fact and shows it on the page
-    function showRandomFact() {
-      //
-      // HOW RANDOMNESS WORKS (AI & COMPUTERS):
-      //
-      // Math.random() gives a decimal number between 0 and 0.999...
-      // For example: 0.7382...
-      //
-      // We multiply by the number of facts (e.g., 100):
-      // 0.7382 × 100 = 73.82
-      //
-      // Then Math.floor() rounds DOWN to a whole number:
-      // Math.floor(73.82) = 73
-      //
-      // So we pick fact number 73 from our list!
-      // (Arrays start counting from 0, so fact "73" is actually the 74th one)
-      //
-      // FUN AI FACT: This is called "pseudo-random" because computers
-      // can't be truly random — they use mathematical formulas based on
-      // things like the current time to SEEM random!
-
-      const randomIndex = Math.floor(Math.random() * facts.length);
+    window.showRandomFact = function() {
+      const randomIndex = Math.floor(Math.random() * randomFacts.length);
       const factText = document.getElementById('factText');
       const factBox = document.getElementById('factBox');
 
-      // Quick animation: fade out, change text, fade in
+      window.speechSynthesis.cancel();
       factBox.style.opacity = '0';
       factBox.style.transform = 'scale(0.95)';
 
-      // Stop any current speech when generating a new fact
-      window.speechSynthesis.cancel();
-
-      // setTimeout waits a bit before running code (300 milliseconds here)
       setTimeout(() => {
-        factText.textContent = facts[randomIndex];
+        factText.textContent = randomFacts[randomIndex];
         factBox.style.opacity = '1';
         factBox.style.transform = 'scale(1)';
-        // Show the "Read Aloud" button
         document.getElementById('speakBtn').classList.add('visible');
         document.getElementById('speakBtn').classList.remove('speaking');
         document.getElementById('speakBtn').innerHTML = '&#128264; Read Aloud';
       }, 300);
 
-      // Update the counter
       factsShown++;
-      document.getElementById('counter').textContent =
-        `Facts generated: ${factsShown}`;
-    }
+      document.getElementById('counter').textContent = `Facts generated: ${factsShown}`;
+    };
 
     // ============================================
-    // ADMIN PANEL FUNCTIONS
+    // TEXT-TO-SPEECH
     // ============================================
-    //
-    // Hugo - these functions control the secret admin panel!
-    // Only someone who knows the code (222016) can get in.
-    //
-    // SECURITY NOTE: In a real professional website, you would
-    // NEVER put a password directly in the code like this,
-    // because anyone can read the code! Real websites use
-    // "servers" (powerful computers) to check passwords secretly.
-    // But for learning, this is a great start!
 
-    const ACCESS_CODE = "222016";  // "const" = a variable that CANNOT change
+    window.speakFact = function(textElementId, btnElementId) {
+      const btn = document.getElementById(btnElementId);
+      if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+        btn.classList.remove('speaking');
+        btn.innerHTML = '&#128264; Read Aloud';
+        return;
+      }
+      const text = document.getElementById(textElementId).textContent;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.95;
+      utterance.pitch = 1;
+      utterance.onstart = () => { btn.classList.add('speaking'); btn.innerHTML = '&#9724; Stop'; };
+      utterance.onend = () => { btn.classList.remove('speaking'); btn.innerHTML = '&#128264; Read Aloud'; };
+      window.speechSynthesis.speak(utterance);
+    };
 
-    function showCodeEntry() {
+    // ============================================
+    // ADMIN PANEL
+    // ============================================
+
+    const ACCESS_CODE = "222016";
+    let currentAdminTab = 'pending';
+    let editingDocId = null;
+    let editingType = null; // 'approved', 'random'
+    let editingRandomIndex = -1;
+    let currentAnnouncement = "";
+
+    window.showCodeEntry = function() {
       document.getElementById('codeOverlay').classList.add('active');
       document.getElementById('codeInput').value = '';
       document.getElementById('errorMsg').textContent = '';
       document.getElementById('codeInput').focus();
-    }
+    };
 
-    function hideCodeEntry() {
+    window.hideCodeEntry = function() {
       document.getElementById('codeOverlay').classList.remove('active');
-    }
+    };
 
-    function checkCode() {
-      const input = document.getElementById('codeInput').value;
-      if (input === ACCESS_CODE) {
+    window.checkCode = function() {
+      if (document.getElementById('codeInput').value === ACCESS_CODE) {
         hideCodeEntry();
         openAdmin();
       } else {
         document.getElementById('errorMsg').textContent = 'Incorrect code. Try again.';
         document.getElementById('codeInput').value = '';
       }
-    }
+    };
 
     function openAdmin() {
       document.getElementById('adminPanel').classList.add('active');
-      renderFactList();
+      updatePendingBadge();
+      renderAdminList();
     }
 
-    function closeAdmin() {
+    window.closeAdmin = function() {
       document.getElementById('adminPanel').classList.remove('active');
+    };
+
+    window.switchAdminTab = function(tab) {
+      currentAdminTab = tab;
+      document.getElementById('tabPending').classList.toggle('active', tab === 'pending');
+      document.getElementById('tabApproved').classList.toggle('active', tab === 'approved');
+      document.getElementById('tabRandom').classList.toggle('active', tab === 'random');
+      document.getElementById('searchBar').value = '';
+      renderAdminList();
+    };
+
+    function updatePendingBadge() {
+      document.getElementById('pendingBadge').textContent = pendingFacts.length;
     }
 
-    // ============================================
-    // RENDERING THE FACT LIST
-    // ============================================
-    //
-    // Hugo - "rendering" means building what you see on screen.
-    // This function creates the list of all facts in the admin panel.
-    //
-    // Every time you add, edit, or delete a fact, we "re-render"
-    // (rebuild) the whole list. This is how many websites work —
-    // including ones built with tools like React (used by Instagram,
-    // Netflix, and lots of other apps)!
-
-    function renderFactList() {
+    window.renderAdminList = function() {
       const list = document.getElementById('factList');
       const searchTerm = document.getElementById('searchBar').value.toLowerCase();
-
-      // Pick which array to show based on the active tab
-      const currentFacts = currentAdminTab === 'facts' ? facts : funnyFacts;
-      const label = currentAdminTab === 'facts' ? 'random facts' : 'funny facts';
-
-      // Clear the current list
       list.innerHTML = '';
 
-      // Loop through every fact in the current tab
-      currentFacts.forEach((fact, index) => {
-        if (searchTerm && !fact.toLowerCase().includes(searchTerm)) {
+      if (currentAdminTab === 'pending') {
+        const filtered = searchTerm
+          ? pendingFacts.filter(f => f.text.toLowerCase().includes(searchTerm))
+          : pendingFacts;
+
+        document.getElementById('factCountLabel').textContent = `${pendingFacts.length} pending submissions`;
+
+        if (filtered.length === 0) {
+          list.innerHTML = '<li class="fact-item" style="justify-content:center;color:#666;">No pending submissions</li>';
           return;
         }
 
-        const li = document.createElement('li');
-        li.className = 'fact-item';
-        li.innerHTML = `
-          <span class="fact-item-num">#${index + 1}</span>
-          <span>${fact}</span>
-          <div class="fact-item-actions">
-            <button class="edit-btn" onclick="openEditModal(${index})">Edit</button>
-            <button class="delete-btn" onclick="deleteFact(${index})">Delete</button>
-          </div>
-        `;
-        list.appendChild(li);
-      });
+        filtered.forEach((fact) => {
+          const li = document.createElement('li');
+          li.className = 'fact-item pending-item';
+          li.innerHTML = `
+            <div>
+              <span class="pending-label">Pending</span>
+              <span>${escapeHtml(fact.text)}</span>
+              <div style="color:#555;font-size:0.8em;margin-top:4px;">By ${escapeHtml(fact.submittedBy)} on ${fact.date}</div>
+            </div>
+            <div class="fact-item-actions">
+              <button class="approve-btn" onclick="approveFact('${fact.id}')">Approve</button>
+              <button class="decline-btn" onclick="declineFact('${fact.id}')">Decline</button>
+            </div>
+          `;
+          list.appendChild(li);
+        });
 
-      document.getElementById('factCountLabel').textContent =
-        `${currentFacts.length} ${label} total`;
-    }
+      } else if (currentAdminTab === 'approved') {
+        const filtered = searchTerm
+          ? approvedFacts.filter(f => f.text.toLowerCase().includes(searchTerm))
+          : approvedFacts;
+
+        document.getElementById('factCountLabel').textContent = `${approvedFacts.length} approved community facts`;
+
+        filtered.forEach((fact, i) => {
+          const li = document.createElement('li');
+          li.className = 'fact-item';
+          li.innerHTML = `
+            <span class="fact-item-num">#${i + 1}</span>
+            <span>${escapeHtml(fact.text)} <span style="color:#555;font-size:0.8em;">(${fact.votes} votes)</span></span>
+            <div class="fact-item-actions">
+              <button class="edit-btn" onclick="openEditModal('${fact.id}', 'approved')">Edit</button>
+              <button class="delete-btn" onclick="deleteApprovedFact('${fact.id}')">Delete</button>
+            </div>
+          `;
+          list.appendChild(li);
+        });
+
+      } else if (currentAdminTab === 'random') {
+        const filtered = searchTerm
+          ? randomFacts.map((f, i) => ({text: f, index: i})).filter(f => f.text.toLowerCase().includes(searchTerm))
+          : randomFacts.map((f, i) => ({text: f, index: i}));
+
+        document.getElementById('factCountLabel').textContent = `${randomFacts.length} random facts`;
+
+        filtered.forEach((fact) => {
+          const li = document.createElement('li');
+          li.className = 'fact-item';
+          li.innerHTML = `
+            <span class="fact-item-num">#${fact.index + 1}</span>
+            <span>${escapeHtml(fact.text)}</span>
+            <div class="fact-item-actions">
+              <button class="edit-btn" onclick="openEditModal(${fact.index}, 'random')">Edit</button>
+              <button class="delete-btn" onclick="deleteRandomFact(${fact.index})">Delete</button>
+            </div>
+          `;
+          list.appendChild(li);
+        });
+      }
+    };
 
     // ============================================
-    // ADD, EDIT, DELETE FACTS
+    // APPROVE / DECLINE
     // ============================================
 
-    function openAddModal() {
-      editingIndex = -1;
-      document.getElementById('modalTitle').textContent = 'Add New Fact';
+    window.approveFact = async function(pendingId) {
+      const fact = pendingFacts.find(f => f.id === pendingId);
+      if (!fact) return;
+
+      try {
+        // Add to approved collection
+        await addDoc(collection(db, 'approved'), {
+          text: fact.text,
+          votes: 0,
+          submittedBy: fact.submittedBy,
+          date: fact.date
+        });
+        // Remove from pending
+        await deleteDoc(doc(db, 'pending', pendingId));
+      } catch (error) {
+        console.error('Approve error:', error);
+      }
+    };
+
+    window.declineFact = async function(pendingId) {
+      const fact = pendingFacts.find(f => f.id === pendingId);
+      if (!fact) return;
+      if (confirm(`Decline this fact?\n\n"${fact.text}"`)) {
+        try {
+          await deleteDoc(doc(db, 'pending', pendingId));
+        } catch (error) {
+          console.error('Decline error:', error);
+        }
+      }
+    };
+
+    // ============================================
+    // EDIT / DELETE / ADD
+    // ============================================
+
+    window.openAddModal = function() {
+      editingDocId = null;
+      editingType = currentAdminTab;
+      editingRandomIndex = -1;
+      const label = currentAdminTab === 'approved' ? 'Community' : 'Random';
+      document.getElementById('modalTitle').textContent = `Add New ${label} Fact`;
       document.getElementById('factInput').value = '';
       document.getElementById('factModal').classList.add('active');
       document.getElementById('factInput').focus();
-    }
+    };
 
-    function openEditModal(index) {
-      editingIndex = index;
-      const currentFacts = currentAdminTab === 'facts' ? facts : funnyFacts;
-      document.getElementById('modalTitle').textContent = 'Edit Fact';
-      document.getElementById('factInput').value = currentFacts[index];
+    window.openEditModal = function(idOrIndex, type) {
+      editingType = type;
+      if (type === 'approved') {
+        editingDocId = idOrIndex;
+        editingRandomIndex = -1;
+        const fact = approvedFacts.find(f => f.id === idOrIndex);
+        document.getElementById('factInput').value = fact ? fact.text : '';
+        document.getElementById('modalTitle').textContent = 'Edit Community Fact';
+      } else {
+        editingDocId = null;
+        editingRandomIndex = idOrIndex;
+        document.getElementById('factInput').value = randomFacts[idOrIndex];
+        document.getElementById('modalTitle').textContent = 'Edit Random Fact';
+      }
       document.getElementById('factModal').classList.add('active');
       document.getElementById('factInput').focus();
-    }
+    };
 
-    function closeFactModal() {
+    window.closeFactModal = function() {
       document.getElementById('factModal').classList.remove('active');
-      editingIndex = -1;
-    }
+      editingDocId = null;
+      editingType = null;
+      editingRandomIndex = -1;
+    };
 
-    function saveFact() {
-      const text = document.getElementById('factInput').value.trim();
-      if (!text) return;
+    window.saveFact = async function() {
+      const raw = document.getElementById('factInput').value.trim();
+      if (!raw) return;
+      const text = sanitiseInput(raw);
 
-      // Pick the right array based on which admin tab is active
-      const currentFacts = currentAdminTab === 'facts' ? facts : funnyFacts;
-
-      if (editingIndex === -1) {
-        currentFacts.push(text);
-      } else {
-        currentFacts[editingIndex] = text;
+      try {
+        if (editingDocId && editingType === 'approved') {
+          // Edit existing community fact
+          await updateDoc(doc(db, 'approved', editingDocId), { text: text });
+        } else if (editingRandomIndex !== -1 && editingType === 'random') {
+          // Edit random fact (local only)
+          randomFacts[editingRandomIndex] = text;
+        } else if (editingType === 'approved' || currentAdminTab === 'approved') {
+          // Add new community fact
+          await addDoc(collection(db, 'approved'), {
+            text: text,
+            votes: 0,
+            submittedBy: 'Admin',
+            date: new Date().toISOString().split('T')[0]
+          });
+        } else {
+          // Add new random fact (local only)
+          randomFacts.push(text);
+        }
+      } catch (error) {
+        console.error('Save error:', error);
       }
 
       closeFactModal();
-      renderFactList();
-    }
+      renderAdminList();
+    };
 
-    function deleteFact(index) {
-      const currentFacts = currentAdminTab === 'facts' ? facts : funnyFacts;
-      if (confirm(`Delete this fact?\n\n"${currentFacts[index]}"`)) {
-        currentFacts.splice(index, 1);
-        renderFactList();
+    window.deleteApprovedFact = async function(docId) {
+      const fact = approvedFacts.find(f => f.id === docId);
+      if (fact && confirm(`Delete this community fact?\n\n"${fact.text}"`)) {
+        try {
+          await deleteDoc(doc(db, 'approved', docId));
+        } catch (error) {
+          console.error('Delete error:', error);
+        }
       }
-    }
+    };
+
+    window.deleteRandomFact = function(index) {
+      if (confirm(`Delete this random fact?\n\n"${randomFacts[index]}"`)) {
+        randomFacts.splice(index, 1);
+        renderAdminList();
+      }
+    };
 
     // ============================================
     // ANNOUNCEMENTS
     // ============================================
 
-    function openAnnouncementModal() {
+    window.openAnnouncementModal = function() {
       document.getElementById('announcementInput').value = currentAnnouncement;
       document.getElementById('announcementModal').classList.add('active');
       document.getElementById('announcementInput').focus();
-    }
+    };
 
-    function closeAnnouncementModal() {
+    window.closeAnnouncementModal = function() {
       document.getElementById('announcementModal').classList.remove('active');
-    }
+    };
 
-    function sendAnnouncement() {
+    window.sendAnnouncement = function() {
       const text = document.getElementById('announcementInput').value.trim();
       if (!text) {
-        // If empty, clear any existing announcement
         currentAnnouncement = "";
         document.getElementById('announcementBar').classList.remove('active');
       } else {
@@ -2137,107 +1303,24 @@
         document.getElementById('announcementBar').classList.add('active');
       }
       closeAnnouncementModal();
-    }
+    };
 
-    function closeAnnouncement() {
+    window.closeAnnouncement = function() {
       document.getElementById('announcementBar').classList.remove('active');
-    }
-
-    // ============================================
-    // TEXT-TO-SPEECH (Read Aloud)
-    // ============================================
-    //
-    // Hugo - this is REAL AI in action! The Web Speech API
-    // uses a technology called "speech synthesis" to turn
-    // written text into spoken words. Your computer has a
-    // built-in voice engine that reads the text out loud.
-    //
-    // This is the same kind of technology used by:
-    // - Siri (Apple)
-    // - Alexa (Amazon)
-    // - Google Assistant
-    //
-    // The computer breaks words into sounds called "phonemes",
-    // then combines them to create speech. It's not a recording
-    // of a real person — the computer GENERATES the voice!
-
-    function speakFact(textElementId, btnElementId) {
-      const btn = document.getElementById(btnElementId);
-
-      // If it's already speaking, stop it
-      if (window.speechSynthesis.speaking) {
-        window.speechSynthesis.cancel();
-        btn.classList.remove('speaking');
-        btn.innerHTML = '&#128264; Read Aloud';
-        return;
-      }
-
-      // Get the text from the fact box
-      const text = document.getElementById(textElementId).textContent;
-
-      // Create a new "utterance" — that's the thing the browser will speak
-      const utterance = new SpeechSynthesisUtterance(text);
-
-      // Settings for the voice
-      utterance.rate = 0.95;     // Speed (1 = normal, 0.5 = slow, 2 = fast)
-      utterance.pitch = 1;       // How high or low the voice is
-
-      // When it starts speaking, change the button
-      utterance.onstart = () => {
-        btn.classList.add('speaking');
-        btn.innerHTML = '&#9724; Stop';
-      };
-
-      // When it finishes, reset the button
-      utterance.onend = () => {
-        btn.classList.remove('speaking');
-        btn.innerHTML = '&#128264; Read Aloud';
-      };
-
-      // Speak!
-      window.speechSynthesis.speak(utterance);
-    }
+    };
 
     // ============================================
     // KEYBOARD SHORTCUT
     // ============================================
-    // Hugo - we can listen for key presses too!
-    // This lets you press the Space bar to generate a fact
-    // (but only when not typing in a text box)
 
     document.addEventListener('keydown', (event) => {
-      // Check we're not typing in an input or textarea
       const tag = event.target.tagName.toLowerCase();
       if (tag === 'input' || tag === 'textarea') return;
-
       if (event.code === 'Space') {
-        event.preventDefault(); // Stop the page from scrolling
+        event.preventDefault();
         showRandomFact();
       }
     });
-
-    /*
-      ============================================
-      🎓 WHAT YOU'VE LEARNED, HUGO:
-      ============================================
-
-      1. HTML creates the structure (buttons, text, boxes)
-      2. CSS makes it look good (colors, sizes, animations)
-      3. JavaScript makes it interactive (click → something happens)
-      4. Variables store information (like a labelled box)
-      5. Functions are reusable sets of instructions
-      6. Arrays are lists of items
-      7. Computers use math formulas to fake randomness
-      8. Events (like "click" or "keydown") trigger functions
-
-      NEXT STEPS if you want to keep learning:
-      - Try changing the colors in the CSS section
-      - Try adding your own facts to the array
-      - Try changing the button text
-      - Look up "HTML tutorial for kids" on YouTube
-
-      You just built your first website. That's brilliant! 🚀
-    */
   </script>
 
 </body>
